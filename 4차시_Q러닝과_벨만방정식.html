@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q러닝과 벨만 방정식</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#f6f8fc; --bg2:#eaeff7; --card:#ffffff;
+  --line:rgba(20,35,66,.16);
+  --fg:#16233c; --dim:#5d6c86;
+  --a:#0a7ec2;   /* blue   - 지도 */
+  --b:#b06a00;   /* amber  - 비지도 */
+  --c:#0e8a52;   /* green  - 강화 */
+  --d:#6a3fc0;   /* purple */
+  --warn:#c8324a;
+  --aRGB:10,126,194; --bRGB:176,106,0; --cRGB:14,138,82; --dRGB:106,63,192;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(11px, min(1.12vw, 2.0vh), 24px)}
+body{
+  font-family:'Noto Sans KR',system-ui,sans-serif;
+  background:var(--bg1); color:var(--fg);
+  overflow:hidden; -webkit-font-smoothing:antialiased;
+}
+.deck{position:fixed;inset:0}
+.slide{
+  position:absolute; inset:0;
+  display:none; flex-direction:column;
+  padding:3.4rem 4.2rem 4.2rem;
+  background:
+    radial-gradient(1200px 700px at 88% -10%, rgba(10,126,194,.09), transparent 60%),
+    radial-gradient(900px 600px at 4% 108%, rgba(106,63,192,.08), transparent 60%),
+    linear-gradient(160deg,var(--bg1),var(--bg2));
+}
+.slide.on{display:flex; animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(.6rem)}to{opacity:1;transform:none}}
+.slide{overflow-y:auto; overflow-x:hidden}
+.slide::-webkit-scrollbar{width:.55rem}
+.slide::-webkit-scrollbar-thumb{background:rgba(20,35,66,.25);border-radius:99px}
+
+/* ---------- typography ---------- */
+.kicker{font-size:.95rem;letter-spacing:.22em;color:var(--a);font-weight:700;margin-bottom:.7rem}
+h1{font-size:3.9rem;font-weight:900;line-height:1.18;letter-spacing:-.02em}
+h2{font-size:2.5rem;font-weight:800;line-height:1.25;letter-spacing:-.02em;margin-bottom:.4rem}
+h3{font-size:1.5rem;font-weight:700;margin-bottom:.5rem}
+p,li,td,th{font-size:1.22rem;line-height:1.72;color:var(--fg)}
+.sub{color:var(--dim)}
+.hr{height:1px;background:var(--line);margin:1.2rem 0}
+.body{flex:1 0 auto;display:flex;flex-direction:column;gap:1.5rem;min-height:0;
+  justify-content:center; justify-content:safe center}
+.top{margin-bottom:1.4rem;flex:0 0 auto}
+b.hl{color:var(--a)}
+em{font-style:normal;background:linear-gradient(transparent 58%, rgba(10,126,194,.22) 0);padding:0 .15em}
+code{font-family:'JetBrains Mono',monospace;background:rgba(20,35,66,.07);
+  padding:.12em .42em;border-radius:.35rem;font-size:.92em;color:#0a5f92}
+
+/* ---------- layout helpers ---------- */
+.row{display:flex;gap:1.4rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.card{
+  background:var(--card); border:1px solid var(--line);
+  border-radius:1.1rem; padding:1.5rem 1.7rem;
+  box-shadow:0 1px 2px rgba(20,35,66,.05), 0 6px 18px rgba(20,35,66,.06);
+}
+.card.acc{border-left:.32rem solid var(--a)}
+.card.acc-b{border-left:.32rem solid var(--b)}
+.card.acc-c{border-left:.32rem solid var(--c)}
+.card.acc-d{border-left:.32rem solid var(--d)}
+.card.acc-w{border-left:.32rem solid var(--warn)}
+.card h3{line-height:1.45}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;letter-spacing:.08em;
+  padding:.22rem .7rem;border-radius:99px;border:1px solid var(--line);color:var(--dim)}
+.tag.a{color:var(--a);border-color:rgba(10,126,194,.4);background:rgba(10,126,194,.09)}
+.tag.b{color:var(--b);border-color:rgba(176,106,0,.4);background:rgba(176,106,0,.09)}
+.tag.c{color:var(--c);border-color:rgba(14,138,82,.4);background:rgba(14,138,82,.09)}
+.tag.d{color:var(--d);border-color:rgba(106,63,192,.4);background:rgba(106,63,192,.09)}
+.tag.w{color:var(--warn);border-color:rgba(200,50,74,.4);background:rgba(200,50,74,.09)}
+ul{padding-left:1.25rem} li{margin:.3rem 0}
+ul.clean{list-style:none;padding:0}
+ul.clean li{position:relative;padding-left:1.4rem}
+ul.clean li::before{content:'▸';position:absolute;left:0;color:var(--a)}
+
+table{border-collapse:collapse;width:100%;background:#fff;border-radius:.5rem;overflow:hidden}
+th,td{border:1px solid var(--line);padding:.72rem .9rem;text-align:left;vertical-align:top}
+th{background:rgba(20,35,66,.06);font-weight:700;font-size:1.08rem;color:var(--fg)}
+td{font-size:1.06rem}
+tr:nth-child(even) td{background:rgba(20,35,66,.022)}
+.num{width:3.2rem;text-align:center;color:var(--a);font-weight:800}
+
+.pill{
+  width:3.5rem;height:3.5rem;flex:0 0 auto;border-radius:1rem;
+  display:grid;place-items:center;font-weight:900;font-size:1.7rem;
+  background:linear-gradient(140deg,rgba(10,126,194,.16),rgba(106,63,192,.14));
+  border:1px solid var(--line);color:var(--a)
+}
+
+/* ---------- agent-env loop ---------- */
+.loop{display:flex;align-items:center;justify-content:center;gap:2.2rem}
+.box{width:14rem;height:8rem;border-radius:1.2rem;display:grid;place-items:center;
+  font-weight:800;font-size:1.5rem;border:2px solid;
+  box-shadow:0 2px 10px rgba(20,35,66,.07)}
+.box.ag{border-color:var(--c);background:rgba(14,138,82,.09);color:var(--c)}
+.box.en{border-color:var(--a);background:rgba(10,126,194,.09);color:var(--a)}
+.arrows{display:flex;flex-direction:column;gap:1.3rem;text-align:center}
+.arr{font-size:1.05rem;color:var(--dim);white-space:nowrap}
+.arr b{color:var(--fg)}
+
+/* ---------- formula ---------- */
+.fml{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;
+  text-align:center;padding:1.2rem;background:#fff;border:1px solid var(--line);
+  border-radius:.9rem;letter-spacing:.01em}
+.fml small{display:block;font-family:'Noto Sans KR',sans-serif;font-size:.62em;
+  font-weight:400;color:var(--dim);margin-top:.6rem;letter-spacing:0}
+
+/* ---------- practice ---------- */
+.prac input, .prac textarea{
+  width:100%;background:#fff;border:1px solid var(--line);
+  border-radius:.45rem;color:var(--fg);font-family:inherit;font-size:1.02rem;
+  padding:.5rem .65rem;resize:vertical
+}
+.prac input::placeholder{color:#9aa7bb}
+.prac input:focus,.prac textarea:focus{outline:2px solid var(--a);outline-offset:1px}
+.btn{
+  background:rgba(10,126,194,.10);border:1px solid rgba(10,126,194,.45);
+  color:var(--a);font-family:inherit;font-weight:700;font-size:1.02rem;
+  padding:.55rem 1.2rem;border-radius:.6rem;cursor:pointer;transition:.15s
+}
+.btn:hover{background:rgba(10,126,194,.2)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--dim)}
+.btn.big{font-size:1.25rem;padding:.8rem 2rem}
+.ans{display:none;margin-top:.9rem}
+.ans.show{display:block}
+pre{background:#f2f5fa;border:1px solid var(--line);border-radius:.7rem;
+  padding:1rem 1.2rem;overflow-x:auto}
+pre code{background:none;padding:0;font-size:.98rem;line-height:1.6;color:#22304d}
+
+/* ---------- chrome ---------- */
+.hud{position:fixed;right:1.6rem;bottom:1.1rem;display:flex;gap:.9rem;align-items:center;
+  font-size:.95rem;color:var(--dim);z-index:10}
+.hud button{background:#fff;border:1px solid var(--line);color:var(--dim);
+  width:2.1rem;height:2.1rem;border-radius:.5rem;cursor:pointer;font-size:1rem}
+.hud button:hover{color:var(--a);border-color:var(--a)}
+.bar{position:fixed;left:0;bottom:0;height:.28rem;background:linear-gradient(90deg,var(--a),var(--d));
+  z-index:11;transition:width .25s}
+.brand{position:fixed;left:1.8rem;bottom:1.2rem;font-size:.9rem;color:rgba(20,35,66,.3);z-index:10}
+.note{font-size:1rem;color:var(--dim)}
+.center{align-items:center;text-align:center;justify-content:center}
+
+.step{opacity:0;transform:translateY(.7rem);transition:opacity .35s ease, transform .35s ease}
+.step.in{opacity:1;transform:none}
+#hint{color:var(--a);font-size:.9rem;animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
+.strike{text-decoration:line-through;text-decoration-color:var(--warn);
+  text-decoration-thickness:.18em;color:var(--dim)}
+
+/* 촘촘한 표 / 카드 */
+table.tight th,table.tight td{padding:.4rem .7rem;font-size:.98rem;line-height:1.5}
+.card.pad-s{padding:1.1rem 1.3rem}
+.slide.dense .body{gap:1.05rem}
+.slide.dense h2{font-size:2.25rem}
+.slide.dense .top{margin-bottom:1rem}
+
+/* ---------- 그리드월드 ---------- */
+.gw{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;width:100%}
+.gwc{position:relative;aspect-ratio:1/1;border:1px solid var(--line);border-radius:.7rem;
+  background:#fff;display:grid;place-items:center;
+  box-shadow:0 1px 3px rgba(20,35,66,.06);transition:.15s}
+.gwc .sid{position:absolute;top:.3rem;left:.45rem;font-size:.8rem;color:#a7b2c4;
+  font-family:'JetBrains Mono',monospace;font-weight:700}
+.gwc .face{font-size:2.1rem;line-height:1;z-index:2}
+.gwc.goal{background:rgba(14,138,82,.13);border-color:var(--c)}
+.gwc.pit{background:rgba(200,50,74,.11);border-color:var(--warn)}
+.gwc.here{box-shadow:0 0 0 .22rem rgba(10,126,194,.35);border-color:var(--a)}
+.gwc .term{font-weight:900;font-family:'JetBrains Mono',monospace;font-size:1.5rem}
+.gwc.goal .term{color:var(--c)} .gwc.pit .term{color:var(--warn)}
+/* 셀 안의 4방향 Q값 */
+.qv{position:absolute;font-family:'JetBrains Mono',monospace;font-size:.95rem;
+  font-weight:700;color:#93a0b4;transition:.2s}
+.qv.u{top:.28rem;left:50%;transform:translateX(-50%)}
+.qv.d{bottom:.28rem;left:50%;transform:translateX(-50%)}
+.qv.l{left:.35rem;top:50%;transform:translateY(-50%)}
+.qv.r{right:.35rem;top:50%;transform:translateY(-50%)}
+.qv.pos{color:var(--c)} .qv.neg{color:var(--warn)}
+.qv.best{background:rgba(14,138,82,.14);border-radius:.3rem;padding:0 .2rem}
+.qv.flash{animation:qflash 1s ease}
+@keyframes qflash{0%{background:rgba(10,126,194,.8);color:#fff;font-size:1.35rem}
+  100%{background:transparent}}
+.gwc .arrow{position:absolute;font-size:1.5rem;color:var(--a);opacity:.55;z-index:1}
+
+/* ── AI 시점: 로봇이 선 칸 말고는 전부 가린다 ── */
+.gwc > *{transition:opacity .4s ease}
+.gw.blind .gwc:not(.here) > *{opacity:0}
+.gw.blind .gwc.goal, .gw.blind .gwc.pit{background:#fff;border-color:var(--line)}
+.gw.blind .gwc:not(.here){box-shadow:0 1px 3px rgba(20,35,66,.06)}
+.blindcap{opacity:0;transition:opacity .4s ease .15s;text-align:center;
+  font-size:1rem;color:var(--a);font-weight:700;margin-top:.5rem}
+.blindcap.on{opacity:1}
+
+/* ---------- 업데이트 계산 패널 ---------- */
+.calc{background:#fff;border:1px solid var(--line);border-radius:.9rem;padding:1rem 1.2rem;
+  display:flex;flex-direction:column;gap:.55rem}
+.calc .line{font-family:'JetBrains Mono',monospace;font-size:1.12rem;
+  display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}
+.calc .line .lb{font-family:'Noto Sans KR',sans-serif;font-size:.95rem;color:var(--dim);
+  width:7.4rem;flex:0 0 auto}
+.slotin{width:4.6rem;text-align:center;font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:1.05rem;padding:.3rem .2rem;border-radius:.4rem;
+  border:1.5px solid rgba(10,126,194,.5);background:rgba(10,126,194,.05)}
+.slotin.ok{border-color:var(--c);background:rgba(14,138,82,.12);color:var(--c)}
+.slotin.no{border-color:var(--warn);background:rgba(200,50,74,.09);color:var(--warn);
+  animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-.3rem)}75%{transform:translateX(.3rem)}}
+.chip{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:1.05rem;
+  padding:.18rem .6rem;border-radius:.4rem;background:rgba(20,35,66,.06)}
+.chip.g{background:rgba(14,138,82,.15);color:var(--c)}
+.chip.w{background:rgba(200,50,74,.13);color:var(--warn)}
+.chip.a{background:rgba(10,126,194,.13);color:var(--a)}
+.pad{display:grid;grid-template-columns:repeat(3,3.1rem);grid-template-rows:repeat(2,3.1rem);
+  gap:.35rem;justify-content:center}
+.pad button{border-radius:.6rem;border:1px solid var(--line);background:#fff;
+  font-size:1.4rem;cursor:pointer;color:var(--a);transition:.12s}
+.pad button:hover:not(:disabled){background:rgba(10,126,194,.13);border-color:var(--a)}
+.pad button:disabled{opacity:.3;cursor:not-allowed}
+.log{font-family:'JetBrains Mono',monospace;font-size:.92rem;color:var(--dim);
+  background:rgba(20,35,66,.04);border-radius:.5rem;padding:.5rem .7rem;
+  max-height:6.4rem;overflow-y:auto;line-height:1.55}
+.log b{color:var(--fg)}
+.knob-row{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap}
+.knob-row select{font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.28rem .5rem;
+  border-radius:.4rem;border:1px solid var(--line);background:#fff;color:var(--fg)}
+.mini{font-size:.95rem;color:var(--dim)}
+/* 실시간 Q표 */
+.qtbl{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;background:#fff}
+.qtbl th,.qtbl td{padding:.22rem .4rem;text-align:center;font-size:.92rem;
+  border:1px solid rgba(20,35,66,.10)}
+.qtbl th{background:rgba(20,35,66,.05);font-size:.85rem;font-weight:700}
+.qtbl td:first-child,.qtbl th:first-child{text-align:left;width:2.8rem}
+.qtbl td.z{color:#b3bdcb}
+.qtbl td.p{color:#0b6c41;font-weight:800}
+.qtbl td.n{color:var(--warn);font-weight:800}
+.qtbl td.best{background:rgba(14,138,82,.14)}
+.qtbl td.mx{background:rgba(10,126,194,.09);font-weight:800}
+.qtbl tr.qt-here td{background:rgba(10,126,194,.13)}
+.qtbl tr.qt-peek td{background:rgba(106,63,192,.16)}
+.qtbl tr.qt-term td{color:var(--dim);font-size:.85rem;background:rgba(20,35,66,.03)}
+.qtbl td.flash2{animation:qf2 1s ease}
+@keyframes qf2{0%{background:rgba(10,126,194,.6);color:#fff}100%{}}
+#q-peek{background:#fff;border:1px solid var(--line);border-radius:.6rem;
+  padding:.5rem .7rem;font-size:1rem;min-height:2.4rem;display:flex;align-items:center;
+  font-family:'JetBrains Mono',monospace}
+/* 계산 예시용 격자 */
+.gwc.ex-from{box-shadow:0 0 0 .22rem rgba(10,126,194,.45);border-color:var(--a);z-index:2}
+.gwc.ex-to{box-shadow:0 0 0 .22rem rgba(106,63,192,.42);border-color:var(--d);z-index:2}
+.gwc.dimmed{opacity:.35}
+.ex-arrow{position:absolute;font-size:1.9rem;font-weight:900;color:var(--a);
+  line-height:1;text-shadow:0 0 .3rem #fff}
+#ex-cap{min-height:3.4rem}
+.gwc.clickable{cursor:pointer}
+.gwc.clickable:hover{box-shadow:0 0 0 .18rem rgba(106,63,192,.28)}
+.gw.gw4{grid-template-columns:repeat(4,1fr);gap:.4rem}
+.gw4 .gwc{border-radius:.55rem}
+.gw4 .gwc.ice{background:#dff7fb;border-color:#93d8e4}
+.gw4 .gwc.start{background:#fce3c8;border-color:#e0a05a}
+.gw4 .gwc.goal{background:#37c07b;border-color:#189255}
+.gw4 .gwc.pit{background:#1d2b6b;border-color:#0f1740}
+.gw4 .gwc .term{font-size:1.05rem}
+.gw4 .gwc.goal .term{color:#0a4a2b} .gw4 .gwc.pit .term{color:#c9d4ff}
+.gw4 .gwc .sid{color:#8b9bb0} .gw4 .gwc.pit .sid{color:#8e9dd6} .gw4 .gwc.goal .sid{color:#0a4a2b}
+.gw4 .gwc .lbl{position:absolute;top:.22rem;right:.4rem;font-size:.8rem;font-weight:900;color:#7f8ea3}
+.gw4 .gwc.pit .lbl{color:#8e9dd6} .gw4 .gwc.goal .lbl{color:#0a4a2b} .gw4 .gwc.start .lbl{color:#a4632a}
+.gw4 .gwc .face{font-size:1.6rem}
+.qpanel{background:#fff;border:1px solid var(--line);border-radius:.9rem;padding:.9rem 1rem;
+  display:flex;flex-direction:column;gap:.6rem}
+.qpanel h3{margin-bottom:0}
+.chain td:first-child{font-family:'JetBrains Mono',monospace;font-size:1.15rem;
+  font-weight:700;white-space:nowrap;color:var(--fg)}
+.chain td:last-child{color:var(--dim);font-size:1rem}
+/* G 계산 애니메이션 */
+.gcalc tr{transition:opacity .35s ease, background .35s ease}
+.gcalc tr.dim{opacity:.28}
+.gcalc tr.on td{background:rgba(10,126,194,.11)}
+.gcalc td{font-size:1.05rem}
+.gv{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:800;
+  display:inline-block;min-width:1.3rem;text-align:center}
+.gv.unknown{color:var(--warn)}
+.gv.done{color:var(--c)}
+.gv.pop{animation:gpop .55s cubic-bezier(.3,1.4,.5,1)}
+@keyframes gpop{0%{transform:scale(2.2);color:#0a7ec2}100%{transform:scale(1)}}
+#ga-cap{min-height:2.6rem}
+.gamma-tab td,.gamma-tab th{text-align:center;font-family:'JetBrains Mono',monospace}
+.gamma-tab td:first-child,.gamma-tab th:first-child{text-align:left;font-family:'Noto Sans KR',sans-serif}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1 ─ 표지 -->
+<section class="slide center">
+  <div class="body center">
+    <div class="kicker">인공지능 일반 · 4차시</div>
+    <h1>Q러닝과<br><span style="color:var(--d)">벨만 방정식</span></h1>
+    <div class="hr" style="width:22rem"></div>
+    <p class="sub" style="font-size:1.4rem">상태가 여러 개인 세상에서, 늦게 오는 보상을 어떻게 배울까</p>
+    <p class="note" style="margin-top:1.6rem">← → 또는 스페이스바로 이동 · F 전체화면</p>
+  </div>
+</section>
+
+<!-- 2 ─ RECAP -->
+<section class="slide">
+  <div class="top"><div class="kicker">RECAP</div><h2>밴딧에서 우리가 가졌던 것</h2>
+    <p class="sub">지난 두 시간 동안 AI가 머릿속에 적어 둔 건 <b>숫자 다섯 개</b>가 전부였습니다.</p></div>
+  <div class="body">
+    <div class="fml">
+      Q(A)=0.63 &nbsp; Q(B)=0.54 &nbsp; Q(C)=0.41 &nbsp; Q(D)=0.22 &nbsp; Q(E)=0.17
+      <small>Q값 = <b>“이 행동을 고르면 앞으로 받을 점수의 기댓값”</b></small>
+    </div>
+    <div class="grid2">
+      <div class="card acc">
+        <h3>밴딧에서 Q값은 그냥 <b>평균</b>이었습니다</h3>
+        <p><code>Q(i) = 당첨 횟수 / 시도 횟수</code></p>
+        <p class="sub" style="margin-top:.5rem">당기면 <b>그 자리에서</b> 0 또는 1이 돌아왔으니까,
+          받은 점수를 세어 나누기만 하면 됐습니다.</p>
+      </div>
+      <div class="card acc-c">
+        <h3>고르는 법도 정해져 있었습니다</h3>
+        <p><code>argmax</code> — 가장 큰 Q값의 행동. 가끔은 ε 확률로 딴짓(탐험).</p>
+        <p class="sub" style="margin-top:.5rem">톰슨 샘플링은 “숫자 하나 대신 분포”로 이걸 더 영리하게 만든 것이었죠.</p>
+      </div>
+    </div>
+    <div class="card acc-d step">
+      <h3>오늘 던질 질문</h3>
+      <p style="font-size:1.3rem">“그런데 <em>점수가 지금 안 들어오면</em> Q값을 어떻게 계산하지?”</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 ─ 지연 보상 -->
+<section class="slide">
+  <div class="top"><div class="kicker">PART 1 · 문제</div><h2>보상은 보통 늦게 옵니다</h2></div>
+  <div class="body">
+    <div class="grid3">
+      <div class="card acc-b"><span class="tag b">게임</span>
+        <h3 style="margin-top:.5rem">30수 전의 그 한 수</h3>
+        <p class="sub">바둑에서 이겼습니다. <b>+1점.</b> 그런데 그 승리를 만든 건 30수 전의 포석이었습니다.</p></div>
+      <div class="card acc-b"><span class="tag b">공부</span>
+        <h3 style="margin-top:.5rem">3월의 그 하루</h3>
+        <p class="sub">11월에 좋은 성적을 받았습니다. 그 점수는 <b>3월에 앉아 있던 하루</b>에도 나눠줘야 합니다.</p></div>
+      <div class="card acc-b"><span class="tag b">미로</span>
+        <h3 style="margin-top:.5rem">오른쪽으로 한 칸</h3>
+        <p class="sub">한 칸 움직였습니다. 보상은 <b>0점.</b> 그럼 이 행동은 나쁜 행동인가요?</p></div>
+    </div>
+    <div class="card acc-c step">
+      <p style="font-size:1.25rem">오늘 배울 것은 결국 이 한 문장입니다 —
+        <em>“먼 곳의 점수를, 가까운 칸으로 조금씩 옮겨 적는 방법”</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 ─ 그리드월드 -->
+<section class="slide dense">
+  <div class="top"><span class="tag d">GRIDWORLD</span><h2 style="margin-top:.5rem">오늘의 무대: 3 × 3 격자</h2>
+    <p class="sub">밴딧에서 지웠던 <b>상태 S</b>와 <b>전이 P</b>를 다시 켭니다.</p></div>
+  <div class="body">
+    <div class="row" style="align-items:stretch;gap:1.6rem">
+      <div style="flex:0 0 20rem">
+        <div class="gw" id="gw-blind">
+          <div class="gwc here"><span class="sid">s0</span><span class="face">🤖</span></div>
+          <div class="gwc"><span class="sid">s1</span></div>
+          <div class="gwc"><span class="sid">s2</span></div>
+          <div class="gwc"><span class="sid">s3</span></div>
+          <div class="gwc pit"><span class="sid">s4</span><span class="face">🕳️</span><span class="term" style="position:absolute;bottom:.3rem">−1</span></div>
+          <div class="gwc"><span class="sid">s5</span></div>
+          <div class="gwc"><span class="sid">s6</span></div>
+          <div class="gwc"><span class="sid">s7</span></div>
+          <div class="gwc goal"><span class="sid">s8</span><span class="face">🏁</span><span class="term" style="position:absolute;bottom:.3rem">+1</span></div>
+        </div>
+        <p class="blindcap" id="gw-blind-cap">↑ AI가 보고 있는 것의 전부입니다</p>
+      </div>
+      <div style="flex:1">
+        <table class="tight">
+          <tr><th class="num">#</th><th style="width:11rem">원칙</th><th>그리드월드에서는</th></tr>
+          <tr><td class="num">1</td><td><b>입출력</b></td>
+            <td><b>S = {s0 … s8}</b> — 내가 선 칸 &nbsp;·&nbsp; <b>A = {↑ ↓ ← →}</b></td></tr>
+          <tr><td class="num">2</td><td><b>보상</b></td>
+            <td>🏁 도착 <b style="color:var(--c)">+1</b> · 🕳️ 빠짐 <b style="color:var(--warn)">−1</b> · <b>그 외 전부 0</b></td></tr>
+          <tr><td class="num">3</td><td><b>환경</b></td>
+            <td>화살표대로 한 칸 이동. 벽이면 제자리. 🏁이나 🕳️에 닿으면 <b>한 판 끝(종료)</b></td></tr>
+          <tr><td class="num">4</td><td><b>MDP</b></td>
+            <td>위 세 가지를 <b>⟨S, A, P, R, γ⟩</b> 다섯 부품으로 적는다 <span class="sub">— 아래 표</span></td></tr>
+          <tr><td class="num">5</td><td><b>훈련·추론</b></td>
+            <td>한 판을 <b>에피소드(episode)</b>라 부름. 여러 판 반복하며 배운다</td></tr>
+        </table>
+        <div class="card acc-d pad-s step" style="margin-top:.9rem">
+          <h3>MDP의 다섯 부품 — 이 격자에서는</h3>
+          <table class="tight" style="margin-top:.5rem">
+            <tr><th style="width:9.5rem">부품</th><th style="width:9rem">뜻</th><th>이 격자에서</th></tr>
+            <tr><td><b>S</b> · 상태</td><td>있을 수 있는 상황</td>
+              <td><code>{s0, s1, … s8}</code> — <b>9개 칸</b></td></tr>
+            <tr><td><b>A</b> · 행동</td><td>할 수 있는 일</td>
+              <td><code>{↑, ↓, ←, →}</code> — <b>4가지</b></td></tr>
+            <tr><td><b>P</b> · 전이</td><td>행동하면 어디로</td>
+              <td>누른 방향으로 <b>반드시</b> 한 칸. 벽이면 제자리 <span class="sub">(미끄러짐 없음)</span></td></tr>
+            <tr><td><b>R</b> · 보상</td><td>언제 몇 점</td>
+              <td>🏁 <b style="color:var(--c)">+1</b> · 🕳️ <b style="color:var(--warn)">−1</b> · 그 외 <b>0</b></td></tr>
+            <tr><td><b>γ</b> · 감가율</td><td>미래 점수를 얼마나 깎을지 <span class="sub">(0 ~ 1)</span></td>
+              <td><b>γ = 1</b> — 안 깎습니다. 세 걸음 뒤의 +1도 <b>그대로 +1</b>
+                <span class="sub">(뒤에서 이 값을 바꿔 봅니다)</span></td></tr>
+          </table>
+        </div>
+        <div class="card acc-w pad-s step" data-blind="gw-blind" style="margin-top:.7rem">
+          <h3>중요 — 이 그림은 <b>여러분만</b> 보고 있습니다</h3>
+          <p class="sub">AI는 <b>지도를 볼 수 없습니다.</b> 아는 것은 <b>“지금 내가 s3에 있다”</b>는 사실 하나뿐.
+            구덩이가 어디 있는지, 목표가 어느 쪽인지 <b>움직여 봐야만</b> 알 수 있습니다.</p>
+          <p class="note" style="margin-top:.5rem">위 다섯 부품 중 AI가 아는 건 <b>S와 A뿐</b>입니다.
+            <b style="color:var(--warn)">P와 R은 모릅니다.</b> 그래서 <em>겪어 보면서</em> 배워야 합니다 — 오늘 배울 Q러닝이 그 방법입니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 ─ Q라는 조언자 -->
+<section class="slide">
+  <div class="top"><div class="kicker">PART 2 · Q함수</div><h2>“Q”라는 조언자가 있다고 상상해 봅시다</h2></div>
+  <div class="body">
+    <div class="card acc" style="text-align:center">
+      <p style="font-size:1.35rem">“지금 <b>s3</b>에 서 있는데, <b>아래로</b> 가면 앞으로 몇 점쯤 받을까?”</p>
+      <p class="note" style="margin-top:.4rem">— 이렇게 물어볼 수 있는 상대가 있다면?</p>
+    </div>
+    <div class="fml" style="font-size:1.7rem">
+      Q( <span style="color:var(--a)">상태 s</span>, <span style="color:var(--d)">행동 a</span> ) &nbsp;=&nbsp; 예상 점수
+      <small><b>입력 2개</b>(어디에 있나 · 무엇을 하나) → <b>출력 1개</b>(그러면 앞으로 받을 점수)</small>
+    </div>
+    <div class="grid2">
+      <div class="card acc-d">
+        <h3>물어보면 이렇게 답해 줍니다</h3>
+        <table class="tight">
+          <tr><td>Q(s3, ↑)</td><td>0.59</td></tr>
+          <tr><td><b>Q(s3, ↓)</b></td><td><b style="color:var(--c)">0.81</b> ← 제일 높다</td></tr>
+          <tr><td>Q(s3, ←)</td><td>0.66</td></tr>
+          <tr><td>Q(s3, →)</td><td style="color:var(--warn)">−0.90</td></tr>
+        </table>
+        <p class="note" style="margin-top:.5rem">그럼 <b>아래로</b> 가면 되겠네요. 고민 끝.</p>
+      </div>
+      <div class="card acc-c">
+        <h3>정식 이름</h3>
+        <p><b>상태-행동 가치 함수</b><br>
+          <span class="sub">(state-action value function)</span></p>
+        <div class="hr"></div>
+        <p class="sub">“<b>상태</b>와 <b>행동</b>을 함께 넣으면 그 <b>가치</b>를 돌려주는 함수”라는 뜻입니다.
+          Q는 quality(질)의 첫 글자예요.</p>
+        <p class="note" style="margin-top:.6rem">밴딧에서 쓴 Q(A), Q(B)… 는
+          <b>상태가 하나뿐이라 생략됐던</b> 같은 함수입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 ─ max와 argmax -->
+<section class="slide">
+  <div class="top"><div class="kicker">표기법</div><h2>max와 argmax — 헷갈리기 쉬운 두 글자</h2>
+    <p class="sub">앞으로 계속 나옵니다. 지금 한 번에 정리하고 갑시다.</p></div>
+  <div class="body">
+    <div class="card acc pad-s">
+      <p class="center" style="font-size:1.2rem">s3의 네 방향 Q값 &nbsp;=&nbsp;
+        <span class="chip">↑ 0.59</span> <span class="chip g">↓ 0.81</span>
+        <span class="chip">← 0.66</span> <span class="chip w">→ −0.90</span></p>
+    </div>
+    <div class="grid2">
+      <div class="card acc">
+        <span class="tag a">숫자를 묻는다</span>
+        <div class="fml" style="font-size:1.5rem;margin-top:.7rem">max<sub>a</sub> Q(s3, a) = <b style="color:var(--c)">0.81</b></div>
+        <p style="margin-top:.8rem">“그중 <b>가장 큰 값이 얼마냐</b>”</p>
+        <p class="note" style="margin-top:.4rem">답은 <b>점수</b>입니다. 0.81.</p>
+      </div>
+      <div class="card acc-d">
+        <span class="tag d">행동을 묻는다</span>
+        <div class="fml" style="font-size:1.5rem;margin-top:.7rem">argmax<sub>a</sub> Q(s3, a) = <b style="color:var(--d)">↓</b></div>
+        <p style="margin-top:.8rem">“그 값을 만든 <b>행동이 무엇이냐</b>”</p>
+        <p class="note" style="margin-top:.4rem">답은 <b>방향</b>입니다. 아래쪽.</p>
+      </div>
+    </div>
+    <div class="card acc-c step">
+      <h3>한 문장으로</h3>
+      <p style="font-size:1.25rem"><b>arg</b>는 “argument(입력값)”의 줄임말입니다.
+        <em>max는 출력(값)을, argmax는 입력(행동)을 돌려줍니다.</em></p>
+      <p class="note" style="margin-top:.5rem">Q러닝 알고리즘에는 이 둘이 <b>각각 한 번씩</b> 나옵니다 —
+        <b>배울 때는 max</b>, <b>움직일 때는 argmax</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 ─ 정책 -->
+<section class="slide">
+  <div class="top"><div class="kicker">POLICY</div><h2>표만 있으면 길은 저절로 나온다</h2>
+    <p class="sub">Q표가 완성되면, 지도는 따로 만들 필요가 없습니다.</p></div>
+  <div class="body">
+    <div class="row" style="align-items:center;gap:2rem">
+      <div class="card pad-s" style="flex:0 0 24rem">
+        <table class="tight">
+          <tr><th>상태</th><th>↑</th><th>↓</th><th>←</th><th>→</th><th>고를 행동</th></tr>
+          <tr><td><b>s0</b></td><td>0.00</td><td><b style="color:var(--c)">0.73</b></td><td>0.00</td><td>0.66</td><td><b>↓</b></td></tr>
+          <tr><td><b>s3</b></td><td>0.59</td><td><b style="color:var(--c)">0.81</b></td><td>0.66</td><td>−0.90</td><td><b>↓</b></td></tr>
+          <tr><td><b>s6</b></td><td>0.73</td><td>0.73</td><td>0.73</td><td><b style="color:var(--c)">0.90</b></td><td><b>→</b></td></tr>
+          <tr><td><b>s7</b></td><td>−0.90</td><td>0.81</td><td>0.81</td><td><b style="color:var(--c)">1.00</b></td><td><b>→</b></td></tr>
+        </table>
+      </div>
+      <div style="flex:1">
+        <div class="fml">π(s) = argmax<sub>a</sub> Q(s, a)
+          <small><b>정책(policy)</b> — 각 칸에서 Q값이 가장 큰 방향을 고른다. 그게 전부입니다.</small></div>
+        <div class="card acc-c pad-s" style="margin-top:1rem">
+          <p>표의 각 줄에서 <b>가장 큰 숫자에 동그라미</b>를 치면, 그 화살표들이 곧 <em>목표까지 가는 길</em>이 됩니다.</p>
+          <p class="note" style="margin-top:.5rem">s3에서 →가 −0.90인 걸 보세요. AI는 “오른쪽은 구덩이다”를
+            <b>숫자로</b> 기억하고 있습니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="grid2 step">
+      <div class="card acc-d">
+        <h3>최적 정책 — π<sup>*</sup> <span class="sub" style="font-weight:400;font-size:.75em">optimal policy</span></h3>
+        <p>만약 Q값이 <b>전부 정확하다면</b>, 매번 argmax를 따라가는 이 정책보다
+          <b>더 나은 방법은 없습니다.</b> 그때의 정책을 <b>최적 정책 π<sup>*</sup></b>
+          <span class="sub">(optimal policy)</span>, 그때의 Q값을 <b>최적 Q값 Q<sup>*</sup></b>
+          <span class="sub">(optimal Q)</span>라고 씁니다.</p>
+        <p class="note" style="margin-top:.5rem">별표(*)는 “<b>이보다 나은 것은 없다</b>”는 표시입니다.</p>
+      </div>
+      <div class="card acc-c">
+        <h3>그래서 오늘의 목표는 하나</h3>
+        <p style="font-size:1.2rem">전부 0으로 시작한 36칸짜리 표를,
+          <b>경험만으로 Q<sup>*</sup>에 가깝게 채우는 것.</b></p>
+        <p class="note" style="margin-top:.5rem">표만 채워지면 <b>길은 argmax가 알아서 뽑아 줍니다.</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 ─ 리턴의 재귀 -->
+<section class="slide">
+  <div class="top"><div class="kicker">PART 3 · 그럼 이 표를 어떻게 채우지</div>
+    <h2>“끝까지 받을 점수의 합”을 어떻게 아나</h2>
+    <p class="sub">표만 채워지면 길은 나옵니다. 문제는 <b>그 숫자를 어디서 구하느냐</b>입니다.
+      끝까지 가 보기 전에는 알 수 없어 보이는데요.</p></div>
+  <div class="body">
+    <div class="card acc pad-s">
+      <p><b>리턴(return)</b> — 지금 시점부터 판이 끝날 때까지 받을 점수의 합. 기호로 <b>G</b>.</p>
+      <div class="fml" style="font-size:1.25rem;margin-top:.6rem">
+        G<sub>t</sub> &nbsp;=&nbsp; r<sub>t</sub> &nbsp;+&nbsp; r<sub>t+1</sub> &nbsp;+&nbsp; r<sub>t+2</sub> &nbsp;+&nbsp; r<sub>t+3</sub> &nbsp;+&nbsp; ⋯
+      </div>
+    </div>
+    <div class="card acc-d step">
+      <h3>둘째 항부터 괄호로 묶어 보면</h3>
+      <div class="fml" style="font-size:1.25rem">
+        G<sub>t</sub> = r<sub>t</sub> + ( r<sub>t+1</sub> + r<sub>t+2</sub> + r<sub>t+3</sub> + ⋯ )
+      </div>
+      <p class="center" style="margin:.6rem 0;font-size:1.5rem;color:var(--dim)">↓ 괄호 안은 <b>바로 G<sub>t+1</sub></b></p>
+      <div class="fml" style="font-size:1.9rem;color:var(--c)">
+        G<sub>t</sub> &nbsp;=&nbsp; r<sub>t</sub> &nbsp;+&nbsp; G<sub>t+1</sub>
+        <small style="color:var(--dim)"><b>지금 받은 점수</b> + <b>나머지 전부</b></small>
+      </div>
+    </div>
+    <div class="grid2 step" data-play="GA">
+      <div class="card acc-c">
+        <h3>왜 이게 대단한가</h3>
+        <p>끝까지 가 보지 않아도 됩니다. <b>한 걸음 앞만</b> 알면 나머지는 <em>“그다음 것”</em>에 맡길 수 있으니까요.</p>
+        <p class="note" style="margin-top:.5rem">긴 계산을 <b>짧은 계산 + 나머지</b>로 쪼갠 겁니다.
+          이런 구조를 <b>재귀(recursion)</b>라고 합니다.</p>
+      </div>
+      <div class="card acc-b">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;flex-wrap:wrap">
+          <h3>첫 걸음부터 계산해 볼까요?</h3>
+          <div style="display:flex;gap:.4rem">
+            <button class="btn" onclick="GA.play()">▶ 따라가기</button>
+            <button class="btn ghost" onclick="GA.reset()">처음부터</button>
+          </div>
+        </div>
+        <p class="sub" style="margin-top:.4rem">4걸음 만에 🏁에 닿는 길: 받은 점수는 <code>0, 0, 0, 1</code></p>
+        <table class="tight gcalc" style="margin-top:.4rem">
+          <tr id="ga0"><td style="width:6.5rem">첫 걸음</td>
+            <td>G<sub>0</sub> = 0 + G<sub>1</sub> = <b class="gv unknown" id="gv0">?</b></td></tr>
+          <tr id="ga1"><td>두 번째</td>
+            <td>G<sub>1</sub> = 0 + G<sub>2</sub> = <b class="gv unknown" id="gv1">?</b></td></tr>
+          <tr id="ga2"><td>세 번째</td>
+            <td>G<sub>2</sub> = 0 + G<sub>3</sub> = <b class="gv unknown" id="gv2">?</b></td></tr>
+          <tr id="ga3"><td>마지막 걸음</td>
+            <td>G<sub>3</sub> = <b class="gv unknown" id="gv3">?</b>
+              <span class="sub" id="ga3n" style="font-size:.95rem"></span></td></tr>
+        </table>
+        <p class="note" id="ga-cap" style="margin-top:.5rem">▶ 버튼을 눌러 <b>첫 걸음부터</b> 계산해 보세요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 ─ G와 Q의 연결 -->
+<section class="slide">
+  <div class="top"><div class="kicker">PART 3 · 연결</div><h2>그런데 이 G, 어디서 본 것 같지 않나요?</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="card acc">
+        <span class="tag a">5장에서</span>
+        <h3 style="margin-top:.5rem">Q(s, a)의 정의</h3>
+        <p style="font-size:1.15rem;margin-top:.4rem">“s에서 a로 갔을 때,<br>
+          <em>판이 끝날 때까지 받을 점수의 합</em>”</p>
+      </div>
+      <div class="card acc-b">
+        <span class="tag b">방금</span>
+        <h3 style="margin-top:.5rem">리턴 G<sub>t</sub>의 정의</h3>
+        <p style="font-size:1.15rem;margin-top:.4rem">“지금 시점부터<br>
+          <em>판이 끝날 때까지 받을 점수의 합</em>”</p>
+      </div>
+    </div>
+    <div class="card acc-d center step">
+      <p style="font-size:1.4rem"><b>같은 말입니다.</b> 이름만 둘이었을 뿐이죠.</p>
+    </div>
+    <div class="fml step" style="font-size:1.7rem">
+      Q(s, a) &nbsp;=&nbsp; G<sub>t</sub> &nbsp;=&nbsp; r &nbsp;+&nbsp; G<sub>t+1</sub>
+      <small>지금 받은 점수 <b>r</b> &nbsp;+&nbsp; 도착한 칸부터 끝까지의 총점 <b>G<sub>t+1</sub></b></small>
+    </div>
+    <div class="grid2 step">
+      <div class="card acc-c">
+        <h3>무엇이 좋아졌나</h3>
+        <p>Q값을 구하려고 <b>판이 끝날 때까지 기다릴 필요가 없어졌습니다.</b>
+          <b>한 걸음만</b> 가 보면 r을 알 수 있으니까요.</p>
+      </div>
+      <div class="card acc-w">
+        <h3>이제 딱 하나 남았습니다</h3>
+        <p style="font-size:1.25rem"><b style="color:var(--d)">G<sub>t+1</sub>을 어떻게 알아내느냐.</b></p>
+        <p class="note" style="margin-top:.4rem">도착한 칸부터 끝까지의 총점 — 이것도 결국 <b>끝까지 가 봐야</b> 아는 것 아닌가요?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 ─ 벨만 방정식이란 -->
+<section class="slide">
+  <div class="top"><div class="kicker">PART 3 · 이름 붙이기</div>
+    <h2>방금 우리가 한 일에는 이름이 있습니다</h2>
+    <p class="sub">“큰 문제를 <b>한 걸음 + 나머지</b>로 쪼갠다” — 70년 전에 이미 나온 아이디어입니다.</p></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="card acc">
+        <span class="tag a">1953년</span>
+        <h3 style="margin-top:.5rem">리처드 벨만 (Richard Bellman)</h3>
+        <p class="sub">미국 수학자. 여러 단계에 걸친 의사결정 문제를 푸는 방법을 정리했고,
+          이것을 <b>동적 계획법(dynamic programming)</b>이라고 불렀습니다.</p>
+        <p class="note" style="margin-top:.5rem">그 핵심에 놓인 식들을 통틀어 <b>벨만 방정식</b>이라고 부릅니다.
+          강화학습만의 것이 아니라, <b>내비게이션의 최단 경로</b>나 알고리즘 수업의 DP도 같은 뿌리입니다.</p>
+      </div>
+      <div class="card acc-d">
+        <h3>최적성의 원리</h3>
+        <p style="font-size:1.15rem">서울에서 부산까지 가는 <b>가장 빠른 길</b>이 대전을 지난다고 합시다.</p>
+        <div class="fml" style="font-size:1.15rem;margin-top:.5rem;padding:.8rem">
+          서울 → <b>대전</b> → 부산 <span class="sub">(가장 빠른 길)</span>
+        </div>
+        <p style="margin-top:.6rem">그렇다면 <b>대전 → 부산</b> 구간도 <em>반드시</em> 대전에서 부산까지의 가장 빠른 길입니다.</p>
+        <p class="note" style="margin-top:.4rem">아니라면, 그 구간만 바꿔서 전체를 더 빠르게 만들 수 있을 테니까요.</p>
+      </div>
+    </div>
+
+    <div class="card acc-c step">
+      <h3>그래서 큰 문제를 쪼갤 수 있습니다</h3>
+      <div class="fml" style="font-size:1.35rem;margin-top:.5rem">
+        <b>큰 문제</b> &nbsp;=&nbsp; <b style="color:#b06a00">한 걸음</b> &nbsp;+&nbsp; <b style="color:#0a7ec2">남은 작은 문제</b>
+        <small>남은 부분도 <b>그 자체로 최적</b>이라는 보장이 있으니, 안심하고 “거기서 최선을 다한다”고 가정할 수 있습니다</small>
+      </div>
+      <p style="margin-top:.7rem">서울→부산의 소요 시간 = <b>서울→대전 시간</b> + <b>대전→부산의 최소 시간</b>.
+        우리가 8장에서 <code>G<sub>t</sub> = r<sub>t</sub> + G<sub>t+1</sub></code> 로 쪼갠 것이 <b>정확히 이겁니다.</b></p>
+    </div>
+
+    <div class="card acc-b step">
+      <p style="font-size:1.2rem">그럼 이제 <b>우리 문제의 벨만 방정식</b>을 써 봅시다 —
+        <em>“남은 작은 문제”의 값을 무엇으로 채울까요?</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 ─ 벨만 -->
+<section class="slide">
+  <div class="top"><div class="kicker">PART 3 · 답</div><h2>우리 문제의 벨만 방정식</h2>
+    <p class="sub">“남은 작은 문제”의 값 — 즉 G<sub>t+1</sub> 자리에 무엇을 넣을까요?</p></div>
+  <div class="body">
+    <div class="card acc-d">
+      <h3>남은 질문 하나 — G<sub>t+1</sub>은 얼마인가?</h3>
+      <p>G<sub>t+1</sub>은 <b>도착한 칸 s′부터 끝까지 받을 점수의 합</b>입니다.
+        그럼 s′에서 <b>최선을 다한다면</b> 얼마를 받을까요?</p>
+      <p style="margin-top:.5rem">그 값은 <b>이미 표에 적혀 있습니다.</b>
+        s′칸의 네 Q값 중 <b>가장 큰 것</b> — 앞에서 배운 <code>max</code>가 바로 이걸 하는 일이었죠.</p>
+      <div class="fml" style="font-size:1.35rem;margin-top:.6rem">
+        G<sub>t+1</sub> &nbsp;=&nbsp; max<sub>a′</sub> Q(s′, a′)
+      </div>
+    </div>
+    <div class="fml step" style="font-size:1.75rem">Q(s, a) &nbsp;=&nbsp; r &nbsp;+&nbsp; max<sub>a′</sub> Q(s′, a′)
+      <small>지금 이 행동의 값 &nbsp;=&nbsp; <b>당장 받은 점수</b> &nbsp;+&nbsp; <b>도착한 칸에서 최선을 다했을 때의 값</b></small></div>
+    <div class="card acc-c step">
+      <h3>세 줄로 이어 보면</h3>
+      <table class="tight chain" style="margin-top:.4rem">
+        <tr><td>Q(s, a) = G<sub>t</sub></td><td>Q의 정의 — 끝까지 받을 점수의 합</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = r + G<sub>t+1</sub></td><td>총점을 <b>지금</b>과 <b>나머지</b>로 쪼갠다</td></tr>
+        <tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = r + max Q(s′, a′)</td><td>나머지 = <b>도착한 칸의 최고 Q값</b></td></tr>
+      </table>
+      <p class="note" style="margin-top:.6rem">이것이 <b>벨만 방정식(Bellman equation)</b>입니다.
+        <b>Q를 계산하는 데 Q를 쓰고 있다</b>는 점이 핵심이에요 — 자기 자신을 재료로 쓰는 식입니다.</p>
+    </div>
+    <div class="card acc-b step">
+      <h3>왜 이게 지연 보상을 해결하나</h3>
+      <p><b>목표 바로 앞 칸</b>이 먼저 +1을 배웁니다. 그러면 <b>그 앞 칸</b>은
+        “옆 칸이 1점짜리네”를 보고 <b>1</b>을 얻고, <b>또 그 앞 칸</b>도 <b>1</b>을 얻습니다.</p>
+      <p style="font-size:1.25rem;margin-top:.5rem"><em>점수가 목표에서부터 거꾸로, 한 칸씩 번져 나옵니다.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- 12 ─ 계산 예시 -->
+<section class="slide dense" data-init="EX:1">
+  <div class="top"><div class="kicker">PART 3 · 계산 연습</div><h2>한 걸음만 직접 계산해 봅시다</h2>
+    <p class="sub">경우가 딱 <b>세 가지</b>뿐이에요.</p></div>
+  <div class="body" style="gap:.9rem">
+    <div class="row" style="gap:1.5rem;align-items:flex-start">
+
+      <div style="flex:0 0 21rem">
+        <div class="gw" id="ex-gw"></div>
+        <p class="note center" id="ex-cap" style="margin-top:.6rem"></p>
+        <p class="note center" style="margin-top:.3rem;padding-top:.5rem;border-top:1px solid var(--line)">
+          🏁 <b>s8</b> 목표 <b style="color:var(--c)">+1</b> &nbsp;·&nbsp;
+          🕳️ <b>s4</b> 구덩이 <b style="color:var(--warn)">−1</b><br>
+          <span class="sub">그 외 이동은 전부 <b>0점</b></span></p>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;gap:.8rem">
+
+        <div class="card acc-w pad-s">
+          <div style="display:flex;gap:.9rem;align-items:baseline;flex-wrap:wrap">
+            <span class="tag w">경우 ①</span><h3>아직 아무것도 모를 때</h3>
+          </div>
+          <p class="sub" style="margin-top:.3rem">s0에서 <b>↓</b> → <b>s3</b> 도착. r = 0.
+            s3의 네 값은 아직 <code>0, 0, 0, 0</code></p>
+          <div class="fml" style="font-size:1.2rem;margin-top:.4rem;padding:.7rem">
+            Q(s0, ↓) = <span style="color:#b06a00">0</span> + max(<span style="color:#5d6c86">0, 0, 0, 0</span>) = <b>0</b>
+          </div>
+          <p class="note" style="margin-top:.35rem">아무 일도 일어나지 않습니다. <b>초반에는 거의 전부 이 경우</b>입니다.</p>
+        </div>
+
+        <div class="card acc-c pad-s step" data-play="EX:2">
+          <div style="display:flex;gap:.9rem;align-items:baseline;flex-wrap:wrap">
+            <span class="tag c">경우 ②</span><h3>종료 칸에 들어갈 때</h3>
+          </div>
+          <p class="sub" style="margin-top:.3rem">s7에서 움직여 봅니다. 종료 칸에는 <b>이어질 미래가 없으니 max Q = 0</b></p>
+          <div class="fml" style="font-size:1.2rem;margin-top:.4rem;padding:.7rem;line-height:2">
+            s7에서 <b>→</b> → s8(🏁) &nbsp;:&nbsp; Q(s7, →) = <span style="color:#0e8a52">1</span> + 0 = <b style="color:var(--c)">1</b><br>
+            s7에서 <b>↑</b> → s4(🕳️) &nbsp;:&nbsp; Q(s7, ↑) = <span style="color:#c8324a">−1</span> + 0 = <b style="color:var(--warn)">−1</b>
+          </div>
+          <p class="note" style="margin-top:.35rem">여기서 <b>처음으로 0이 아닌 값</b>이 생깁니다.
+            받은 보상이 <b>그대로</b> Q값이 됩니다.</p>
+        </div>
+
+        <div class="card acc pad-s step" data-play="EX:3">
+          <div style="display:flex;gap:.9rem;align-items:baseline;flex-wrap:wrap">
+            <span class="tag a">경우 ③</span><h3>옆 칸에 값이 생긴 다음</h3>
+          </div>
+          <p class="sub" style="margin-top:.3rem">s6에서 <b>→</b> → <b>s7</b> 도착. r = 0.
+            <b>②에서 계산한 덕분에</b> s7의 네 값이 이제 <code>−1, 0, 0, 1</code></p>
+          <div class="fml" style="font-size:1.2rem;margin-top:.4rem;padding:.7rem">
+            Q(s6, →) = <span style="color:#b06a00">0</span> + max(<span style="color:#c8324a">−1</span>, 0, 0, <span style="color:#0e8a52">1</span>) = <b style="color:var(--c)">1</b>
+          </div>
+          <p class="note" style="margin-top:.35rem"><b>점수를 하나도 못 받았는데 값이 1이 되었습니다.</b>
+            “1점짜리 칸으로 데려다줬으니까”요.
+            <span class="sub">(s7의 ↓와 ←가 아직 0인 건, 그쪽으로 <b>가 본 적이 없어서</b>입니다)</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card acc-d step center pad-s">
+      <p style="font-size:1.2rem">이 세 줄이 오늘의 전부입니다.
+        <b>②로 씨앗이 심기고, ③이 반복되며 뒤로 번집니다.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 ─ 활동 안내 -->
+<section class="slide center">
+  <div class="body center">
+    <div class="kicker">체험 활동 · 15분</div>
+    <h1 style="font-size:3.2rem">Q표를 <span style="color:var(--d)">손으로</span> 채워 봅시다</h1>
+    <div class="hr" style="width:26rem"></div>
+    <div class="grid3" style="width:100%;max-width:64rem;margin-top:1rem;text-align:left">
+      <div class="card acc"><h3>여러분이 할 일</h3><p class="sub">로봇을 <b>방향키로 움직이고</b>, 그때마다 Q값을 <b>직접 계산해서 입력</b>합니다</p></div>
+      <div class="card acc-b"><h3>계산기 금지</h3><p class="sub">곱셈은 <code>0.9 × 0.9 = 0.81</code> 수준입니다. <b>암산으로 충분</b>합니다</p></div>
+      <div class="card acc-c"><h3>보게 될 것</h3><p class="sub">🏁에서 시작한 숫자가 <b>거꾸로 번져 오는</b> 장면</p></div>
+    </div>
+    <p class="note" style="margin-top:1.8rem;font-size:1.1rem">다음 슬라이드에서 시작 · 각자 기기에서 진행하세요<br>
+      <span class="sub">칸 두 개만 채우면 됩니다 — ① 도착 칸의 최고값, ② 새 Q값</span></p>
+  </div>
+</section>
+
+<!-- 14 ─ ★ 인터랙티브 Q표 채우기 -->
+<section class="slide prac dense">
+  <div class="top" style="margin-bottom:.8rem">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap">
+      <div><span class="tag d">체험</span><h2 style="margin-top:.35rem;font-size:2.1rem">손으로 채우는 Q표</h2></div>
+      <div class="knob-row">
+        <button class="btn ghost" onclick="Q.arrows()">화살표 보기</button>
+        <button class="btn ghost" onclick="Q.auto()">AI에게 500판 맡기기</button>
+        <button class="btn ghost" onclick="Q.reset()">표 비우기</button>
+      </div>
+    </div>
+  </div>
+  <div class="body" style="justify-content:flex-start">
+    <div class="row" style="align-items:flex-start;gap:1.5rem">
+
+      <div style="flex:0 0 26rem;display:flex;flex-direction:column;gap:.8rem">
+        <div class="gw" id="q-gw"></div>
+        <div id="q-peek"><span class="sub">칸을 <b>클릭</b>하면 그 칸의 max Q를 보여줍니다</span></div>
+        <div class="row" style="gap:1rem;align-items:center">
+          <div class="pad">
+            <span></span><button id="q-pu" onclick="Q.act(0)">↑</button><span></span>
+            <button id="q-pl" onclick="Q.act(2)">←</button>
+            <button id="q-pd" onclick="Q.act(1)">↓</button>
+            <button id="q-pr" onclick="Q.act(3)">→</button>
+          </div>
+          <div style="flex:1">
+            <div class="stat"><span class="k">에피소드</span><span class="v" id="q-ep">1</span></div>
+            <p class="mini" style="margin-top:.3rem">움직인 횟수 <b id="q-step">0</b> · 이번 판 점수 <b id="q-ret">0</b></p>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;gap:.8rem">
+        <div class="calc" id="q-calc">
+          <p class="mini" id="q-guide">방향 버튼을 눌러 로봇을 움직이세요. 움직이면 여기에 계산할 식이 나타납니다.</p>
+          <div id="q-form" style="display:none;flex-direction:column;gap:.55rem">
+            <div class="line"><span class="lb">방금 한 일</span>
+              <span id="q-sa"></span></div>
+            <div class="hr" style="margin:.2rem 0"></div>
+            <div class="line"><span class="lb">① 도착 칸의 최고값</span>
+              <span>max<sub>a′</sub> Q(<b id="q-sp"></b>, a′) =</span>
+              <input class="slotin" id="q-in1" onkeydown="if(event.key==='Enter')Q.check()">
+              <span class="mini" id="q-h1">— a′ 자리에 ↑↓←→ 를 하나씩 넣어 보고, 그중 가장 큰 값</span></div>
+            <div class="line"><span class="lb">② 새 Q값</span>
+              <span><b id="q-lhs" class="chip a"></b> = r + max<sub>a′</sub> Q(s′, a′) &nbsp;=&nbsp; <span id="q-r" class="chip"></span> + ① =</span>
+              <input class="slotin" id="q-in2" onkeydown="if(event.key==='Enter')Q.check()">
+              <span class="mini">— 이 값이 그대로 표에 적힙니다</span></div>
+            <div class="row" style="gap:.6rem;margin-top:.3rem">
+              <button class="btn" onclick="Q.check()">확인</button>
+              <button class="btn ghost" onclick="Q.tell()">정답 보기</button>
+              <span class="mini" id="q-fb" style="align-self:center"></span>
+            </div>
+          </div>
+        </div>
+        <div class="log" id="q-log">기록이 여기에 쌓입니다.</div>
+        <div>
+          <p class="mini" style="margin-bottom:.3rem"><b>Q표</b> — 지금까지 채워진 값
+            <span class="sub">· 초록 배경이 그 줄의 최댓값</span></p>
+          <div id="q-tbl"></div>
+        </div>
+        <p class="mini">🏁이나 🕳️에 도착하면 그 판은 <b>끝</b>입니다. 종료 칸에는 이어질 미래가 없으니 <b>max Q = 0</b>.
+          벽에 부딪히면 <b>제자리</b>이고, 그때 도착 칸은 <b>원래 있던 칸</b>입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 ─ 관찰 -->
+<section class="slide">
+  <div class="top"><div class="kicker">무엇을 보았나</div><h2>점수는 목표에서부터 거꾸로 번진다</h2></div>
+  <div class="body">
+    <div class="grid3">
+      <div class="card acc-w"><span class="tag w">1판째</span>
+        <h3 style="margin-top:.5rem">거의 아무 일도 없다</h3>
+        <p class="sub">움직여 봐야 r=0, 옆 칸도 0이니 계산 결과도 0.
+          <b>딱 한 칸</b>, 🏁 바로 앞에서 들어간 마지막 행동만 <b>1</b>이 됩니다.</p></div>
+      <div class="card acc-b"><span class="tag b">2~3판째</span>
+        <h3 style="margin-top:.5rem">1이 한 칸씩 뒤로</h3>
+        <p class="sub">1점짜리 칸 옆을 지나가면 <code>0 + 1 = 1</code>. 그 옆도 <b>1</b>.
+          <b>1이라는 값이 목표에서부터 거꾸로 번져 나옵니다.</b></p></div>
+      <div class="card acc-c"><span class="tag c">여러 판 뒤</span>
+        <h3 style="margin-top:.5rem">표가 지도가 된다</h3>
+        <p class="sub">지나온 길이 전부 <b>1</b>로 차고, 구멍 쪽은 <b style="color:var(--warn)">−1</b>.
+          이제 0보다 큰 쪽만 따라가면 🏁에 닿습니다.</p></div>
+    </div>
+    <div class="card acc-w step">
+      <h3>그런데 이상한 점 하나</h3>
+      <p>4걸음짜리 지름길도 <b>1</b>, 10걸음 빙 돌아가는 길도 <b>1</b>입니다.
+        받는 점수가 결국 똑같이 +1이니까요.</p>
+      <p style="font-size:1.25rem;margin-top:.5rem">
+        <em>표가 “어느 길이 더 빠른지”를 전혀 말해 주지 않습니다.</em></p>
+      <p class="note" style="margin-top:.5rem">지금은 그냥 넘어갑시다. <b>뒤에서 손잡이를 하나 더 달아</b> 해결합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 16 ─ 4×4로 확장 -->
+<section class="slide dense">
+  <div class="top"><span class="tag d">FROZEN LAKE</span><h2 style="margin-top:.45rem">호수를 넓혀 봅시다 — 4 × 4</h2>
+    <p class="sub">방금 손으로 한 계산 <b>그대로</b>입니다. 칸만 늘었습니다.</p></div>
+  <div class="body">
+    <div class="row" style="align-items:flex-start;gap:1.6rem">
+      <div style="flex:0 0 21rem">
+        <div class="gw gw4">
+          <div class="gwc ice start"><span class="sid">s0</span><span class="lbl">S</span><span class="face">🤖</span></div>
+          <div class="gwc ice"><span class="sid">s1</span><span class="lbl">F</span></div>
+          <div class="gwc ice"><span class="sid">s2</span><span class="lbl">F</span></div>
+          <div class="gwc ice"><span class="sid">s3</span><span class="lbl">F</span></div>
+          <div class="gwc ice"><span class="sid">s4</span><span class="lbl">F</span></div>
+          <div class="gwc pit"><span class="sid">s5</span><span class="lbl">H</span><span class="face">🕳️</span><span class="term" style="position:absolute;bottom:.15rem">−1</span></div>
+          <div class="gwc ice"><span class="sid">s6</span><span class="lbl">F</span></div>
+          <div class="gwc pit"><span class="sid">s7</span><span class="lbl">H</span><span class="face">🕳️</span><span class="term" style="position:absolute;bottom:.15rem">−1</span></div>
+          <div class="gwc ice"><span class="sid">s8</span><span class="lbl">F</span></div>
+          <div class="gwc ice"><span class="sid">s9</span><span class="lbl">F</span></div>
+          <div class="gwc ice"><span class="sid">s10</span><span class="lbl">F</span></div>
+          <div class="gwc pit"><span class="sid">s11</span><span class="lbl">H</span><span class="face">🕳️</span><span class="term" style="position:absolute;bottom:.15rem">−1</span></div>
+          <div class="gwc pit"><span class="sid">s12</span><span class="lbl">H</span><span class="face">🕳️</span><span class="term" style="position:absolute;bottom:.15rem">−1</span></div>
+          <div class="gwc ice"><span class="sid">s13</span><span class="lbl">F</span></div>
+          <div class="gwc ice"><span class="sid">s14</span><span class="lbl">F</span></div>
+          <div class="gwc goal"><span class="sid">s15</span><span class="lbl">G</span><span class="face">🏁</span><span class="term" style="position:absolute;bottom:.15rem">+1</span></div>
+        </div>
+        <p class="note center" style="margin-top:.5rem"><b>S</b> 출발 · <b>F</b> 얼음 · <b>H</b> 구멍 · <b>G</b> 목표</p>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:.9rem">
+        <table class="tight">
+          <tr><th style="width:9rem"></th><th>3×3 (방금 활동)</th><th>4×4 얼음 호수</th></tr>
+          <tr><td><b>상태</b></td><td>9개</td><td><b>16개</b></td></tr>
+          <tr><td><b>Q표 크기</b></td><td>9 × 4 = 36칸</td><td><b>16 × 4 = 64칸</b></td></tr>
+          <tr><td><b>구멍</b></td><td>1개</td><td><b>4개</b> — 피할 곳이 많아짐</td></tr>
+          <tr><td><b>최단 경로</b></td><td>4걸음</td><td><b>6걸음</b> (여러 갈래가 동점)</td></tr>
+          <tr><td><b>계산식</b></td><td colspan="2"><b style="color:var(--c)">완전히 똑같음</b> — Q(s,a) ← r + max Q(s′, a′)</td></tr>
+        </table>
+        <div class="card acc pad-s">
+          <h3>1이 더 멀리까지 번집니다</h3>
+          <div class="fml" style="font-size:1.25rem;padding:.7rem;margin-top:.5rem">
+            1 &nbsp;→&nbsp; 1 &nbsp;→&nbsp; 1 &nbsp;→&nbsp; 1 &nbsp;→&nbsp; 1 &nbsp;→&nbsp; 1
+            <small>🏁에서 출발점까지 <b>여섯 걸음</b> — 지나온 길이 전부 1이 됩니다</small>
+          </div>
+          <p class="note" style="margin-top:.6rem">이 4×4 호수는 <b>강화학습 실습의 표준 무대</b>입니다.
+            대부분의 교재와 라이브러리가 이 지도로 시작합니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 ─ ε을 안 쓰면 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">PART 4 · 다시 만난 딜레마</div>
+    <h2>탐험을 안 하면, 표에 <span style="color:var(--warn)">한 줄기</span>만 남습니다</h2>
+    <p class="sub">칸을 네 조각으로 나눠, <b>네 방향의 Q값</b>을 한 그림에 그렸습니다. 빈 칸은 <b>아직 0</b>입니다.</p></div>
+  <div class="body">
+    <div class="row" style="gap:1.5rem;align-items:flex-start">
+      <div class="qpanel" style="flex:0 0 30rem;border-left:.32rem solid var(--warn)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <h3>ε = 0 — Q값 1등만 따라가기</h3><span class="tag w">채워진 칸 16 / 48</span>
+        </div>
+        <svg viewBox="-2 -2 404 404" style="width:100%;height:auto">
+        <rect x="0" y="0" width="100" height="100" fill="#fce3c8" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,0 L100,100 M100,0 L0,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="7" y="17" font-size="13" font-weight="800" fill="#a4632a">S</text>
+        <text x="30.0" y="36.0" text-anchor="middle" font-size="26">🤖</text>
+        <text x="50.0" y="90.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="100" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,0 L200,100 M200,0 L100,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="150.0" y="90.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="200" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,0 L300,100 M300,0 L200,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="90.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="300" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M300,0 L400,100 M400,0 L300,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="350.0" y="90.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="0" y="100" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,100 L100,200 M100,100 L0,200" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="50.0" y="190.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="77.0" y="157.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="100" y="100" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="150.0" y="159.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="200" y="100" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,100 L300,200 M300,100 L200,200" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="190.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="157.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="277.0" y="157.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="300" y="100" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="159.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="0" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,200 L100,300 M100,200 L0,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="50.0" y="290.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="77.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="100" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,200 L200,300 M200,200 L100,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="150.0" y="224.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="177.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="200" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,200 L300,300 M300,200 L200,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="290.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="277.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="300" y="200" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="259.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="0" y="300" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="50.0" y="359.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="100" y="300" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,300 L200,400 M200,300 L100,400" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <rect x="200" y="300" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,300 L300,400 M300,300 L200,400" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="277.0" y="357.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="300" y="300" width="100" height="100" fill="#37c07b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="359.0" text-anchor="middle" font-size="30" font-weight="800" fill="#0a4a2b">G</text>
+        </svg>
+        <p class="note">한 번 성공한 경로에만 값이 생겼습니다. <b>나머지 32칸은 0</b> —
+          그 방향에 대해 AI는 <b>아무 의견이 없습니다.</b></p>
+      </div>
+      <div class="qpanel" style="border-left:.32rem solid var(--c)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <h3>ε-그리디 — 가끔 딴 길로</h3><span class="tag c">채워진 칸 44 / 48</span>
+        </div>
+        <svg viewBox="-2 -2 404 404" style="width:100%;height:auto">
+        <rect x="0" y="0" width="100" height="100" fill="#fce3c8" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,0 L100,100 M100,0 L0,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="7" y="17" font-size="13" font-weight="800" fill="#a4632a">S</text>
+        <text x="50.0" y="24.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="50.0" y="90.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="23.0" y="57.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="77.0" y="57.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="100" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,0 L200,100 M200,0 L100,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="150.0" y="24.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="150.0" y="90.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="123.0" y="57.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="177.0" y="57.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="200" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,0 L300,100 M300,0 L200,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="24.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="250.0" y="90.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="57.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="277.0" y="57.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="300" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M300,0 L400,100 M400,0 L300,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="350.0" y="24.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="350.0" y="90.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="323.0" y="57.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="377.0" y="57.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="0" y="100" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,100 L100,200 M100,100 L0,200" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="50.0" y="124.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="50.0" y="190.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="23.0" y="157.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="77.0" y="157.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="100" y="100" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="150.0" y="159.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="200" y="100" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,100 L300,200 M300,100 L200,200" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="124.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="250.0" y="190.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="157.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="277.0" y="157.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="300" y="100" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="159.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="0" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,200 L100,300 M100,200 L0,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="50.0" y="224.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="50.0" y="290.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="23.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="77.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="100" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,200 L200,300 M200,200 L100,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="150.0" y="224.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="150.0" y="290.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="123.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="177.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="200" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,200 L300,300 M300,200 L200,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="224.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="250.0" y="290.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="277.0" y="257.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="300" y="200" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="259.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="0" y="300" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="50.0" y="359.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="100" y="300" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,300 L200,400 M200,300 L100,400" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="150.0" y="324.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="150.0" y="390.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="123.0" y="357.0" text-anchor="middle" font-size="17" font-weight="700" fill="#c8324a">−1</text>
+        <text x="177.0" y="357.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="200" y="300" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,300 L300,400 M300,300 L200,400" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="324.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="250.0" y="390.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="357.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <text x="277.0" y="357.0" text-anchor="middle" font-size="17" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="300" y="300" width="100" height="100" fill="#37c07b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="359.0" text-anchor="middle" font-size="30" font-weight="800" fill="#0a4a2b">G</text>
+        </svg>
+        <p class="note">거의 모든 칸에 값이 있습니다. 어디로 가든 <b>비교할 근거</b>가 있고,
+          구멍 쪽은 <b style="color:var(--warn)">−1</b>로 확실히 표시돼 있습니다.</p>
+      </div>
+    </div>
+    <div class="card acc-w step">
+      <h3>빈 칸이 왜 위험한가</h3>
+      <p>왼쪽 표에서 <b>비어 있는 32칸</b>은 “그쪽은 별로다”라는 뜻이 아닙니다. <b>가 본 적이 없다</b>는 뜻입니다.</p>
+      <ul class="clean" style="margin-top:.4rem">
+        <li>더 좋은 길이 바로 옆에 있어도, 값이 0이라 <b>고를 이유가 없습니다</b></li>
+        <li>다른 곳에 <b>더 큰 보상</b>이 있었다면? 역시 <b>영영 발견하지 못합니다</b></li>
+        <li>지도가 바뀌거나 <b>얼음이 미끄러우면</b>, 빈 칸이 곧 사고입니다</li>
+      </ul>
+      <p style="margin-top:.6rem"><em>“안 가 본 곳의 값이 0인 것은, 좋다는 뜻도 나쁘다는 뜻도 아닙니다. 모른다는 뜻입니다.”</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- 18 ─ 탐험 vs 활용 -->
+<section class="slide">
+  <div class="top"><span class="tag c">EXPLOITATION vs EXPLORATION</span>
+    <h2 style="margin-top:.5rem">단골집만 갈 것인가, 새 집을 뚫을 것인가</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="card acc-b">
+        <h3>🍜 점심 고르기로 생각해 봅시다</h3>
+        <ul class="clean">
+          <li><b>늘 가던 맛집만</b> 간다 → 실패는 없지만, <b>더 좋은 집을 영영 모릅니다</b></li>
+          <li><b>늘 새로운 집만</b> 간다 → 가끔 대박, 하지만 <b>망하는 날이 훨씬 많습니다</b></li>
+        </ul>
+        <div class="hr"></div>
+        <p><b>현실적인 답</b> — 평일엔 단골집(<b>활용</b>), 주말엔 모험(<b>탐험</b>).
+          그리고 <em>새 동네로 이사한 첫 달엔 모험을 훨씬 많이</em> 합니다.</p>
+      </div>
+      <div class="card acc">
+        <h3>용어 정리</h3>
+        <table class="tight">
+          <tr><td style="width:11rem"><b>활용</b><br><span class="sub">exploitation</span></td>
+              <td>지금까지 알아낸 것 중 <b>가장 좋은 것을 쓴다</b><br><span class="sub">= Q값 1등 방향으로</span></td></tr>
+          <tr><td><b>탐험</b><br><span class="sub">exploration</span></td>
+              <td>당장 손해를 보더라도 <b>모르는 것을 알아본다</b><br><span class="sub">= 아무 방향이나</span></td></tr>
+        </table>
+        <p class="note" style="margin-top:.6rem">2·3차시 밴딧에서 만난 그 딜레마입니다.
+          <b>상태가 생겨도 딜레마는 그대로</b>입니다.</p>
+      </div>
+    </div>
+    <div class="card acc-c step">
+      <h3>ε-그리디 — 동전을 던져서 정한다</h3>
+      <div class="grid2" style="margin-top:.5rem">
+        <div>
+          <ul class="clean">
+            <li>확률 <b>ε</b> : 네 방향 중 <b>아무거나</b> (탐험)</li>
+            <li>확률 <b>1−ε</b> : <b>argmax</b> 방향 (활용)</li>
+          </ul>
+        </div>
+        <div>
+          <p><b>ε-decay</b> — ε을 <b>1.0에서 시작해 0.05까지</b> 줄여 갑니다.</p>
+          <p class="note" style="margin-top:.3rem">이사 온 첫 달엔 여기저기 다녀 보고, 익숙해지면 단골집으로.
+            앞 슬라이드의 <b>빈 칸</b>이 생기지 않게 하는 방법입니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 ─ 탐험을 만드는 두 방법 -->
+<section class="slide">
+  <div class="top"><div class="kicker">두 가지 방식</div><h2>“가끔 딴 길로”를 만드는 두 가지 방법</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="card acc">
+        <span class="tag a">방법 1</span><h3 style="margin-top:.5rem">ε-그리디</h3>
+        <pre style="margin-top:.5rem"><code>if 난수 &lt; ε:
+    a = 아무 방향   # 완전 무작위
+else:
+    a = argmax Q(s, ·)</code></pre>
+        <p class="sub" style="margin-top:.6rem">동전을 던져 <b>탐험할지 말지</b>를 먼저 정합니다.
+          탐험하기로 했다면 <b>Q값을 아예 무시</b>하고 아무 데나 갑니다.</p>
+      </div>
+      <div class="card acc-d">
+        <span class="tag d">방법 2</span><h3 style="margin-top:.5rem">랜덤 노이즈 더하기</h3>
+        <pre style="margin-top:.5rem"><code>a = argmax( Q(s, ·) + 잡음 )
+# 예) [0.81, 0.59, 0.66, −0.9]
+#   + [0.05, 0.31, 0.12,  0.02]
+#   = [0.86, 0.90, 0.78, −0.88] → ↓ 선택</code></pre>
+        <p class="sub" style="margin-top:.6rem">Q값에 <b>작은 무작위 수를 얹어서</b> 순위를 살짝 흔듭니다.
+          잡음의 크기도 <b>점점 줄여</b> 갑니다.</p>
+      </div>
+    </div>
+    <div class="card acc-b step">
+      <h3>무엇이 다른가</h3>
+      <table class="tight">
+        <tr><th style="width:11rem"></th><th>ε-그리디</th><th>랜덤 노이즈</th></tr>
+        <tr><td><b>탐험할 때 고르는 것</b></td><td>네 방향이 <b>전부 똑같은 확률</b></td>
+            <td><b>2등·3등이 더 잘 뽑힘</b> — 순위를 흔들 뿐이라</td></tr>
+        <tr><td><b>성격</b></td><td>가끔 <b>완전히 엉뚱한 짓</b>을 한다</td>
+            <td><b>괜찮아 보이는 것들 근처</b>를 뒤진다</td></tr>
+        <tr><td><b>구덩이가 많을 때</b></td><td>−1인 줄 알면서도 <b>가끔 빠진다</b></td>
+            <td>−1은 잡음을 얹어도 낮아서 <b>잘 안 간다</b></td></tr>
+      </table>
+      <p class="note" style="margin-top:.6rem">둘 다 널리 쓰입니다. 우리는 <b>더 단순한 ε-그리디</b>로 갑니다.</p>
+    </div>
+    <div class="card acc-c step">
+      <h3>움직일 때와 배울 때가 다르다</h3>
+      <p><b>움직일 때</b>는 가끔 엉뚱한 방향으로 갑니다. 그런데 <b>배울 때</b> 쓰는 식은
+        <code>max Q(s′, a′)</code> — <em>“거기서 최선을 다했다면”</em>을 가정합니다.</p>
+      <p class="sub" style="margin-top:.5rem">즉, <b>엉뚱하게 걸으면서도 최선의 길을 배웁니다.</b>
+        이 성질 때문에 Q러닝을 <b>off-policy</b> 알고리즘이라고 부릅니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 20 ─ 감마 시각화 -->
+<section class="slide dense">
+  <div class="top"><span class="tag a">γ · 다시</span>
+    <h2 style="margin-top:.45rem">표를 다 채웠습니다. 그런데 <span style="color:var(--warn)">전부 1</span>이라면?</h2>
+    <p class="sub"><b>ε-그리디로 충분히 탐험</b>해서 48칸 중 44칸을 채웠습니다.
+      <span class="sub">(조금 전 16장에서 본 그 표입니다)</span></p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1.3rem">
+      <div class="qpanel" style="border-left:.32rem solid var(--warn)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <h3>γ = 1 — 감가 없음</h3><span class="tag w">전부 1 아니면 −1</span>
+        </div>
+        <svg viewBox="-2 -2 404 404" style="width:100%;height:auto">
+        <rect x="0" y="0" width="100" height="100" fill="#fce3c8" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,0 L100,100 M100,0 L0,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="7" y="17" font-size="13" font-weight="800" fill="#a4632a">S</text>
+        <text x="50.0" y="24.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="50.0" y="90.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="23.0" y="57.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="77.0" y="57.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="100" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,0 L200,100 M200,0 L100,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="150.0" y="24.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="150.0" y="90.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <text x="123.0" y="57.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="177.0" y="57.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="200" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,0 L300,100 M300,0 L200,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="24.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="250.0" y="90.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="57.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="277.0" y="57.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="300" y="0" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M300,0 L400,100 M400,0 L300,100" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="350.0" y="24.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="350.0" y="90.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <text x="323.0" y="57.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="377.0" y="57.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="0" y="100" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,100 L100,200 M100,100 L0,200" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="50.0" y="124.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="50.0" y="190.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="23.0" y="157.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="77.0" y="157.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="100" y="100" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="150.0" y="159.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="200" y="100" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,100 L300,200 M300,100 L200,200" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="124.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="250.0" y="190.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="157.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <text x="277.0" y="157.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="300" y="100" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="159.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="0" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M0,200 L100,300 M100,200 L0,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="50.0" y="224.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="50.0" y="290.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <text x="23.0" y="257.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="77.0" y="257.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="100" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,200 L200,300 M200,200 L100,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="150.0" y="224.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <text x="150.0" y="290.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="123.0" y="257.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="177.0" y="257.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="200" y="200" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,200 L300,300 M300,200 L200,300" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="224.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="250.0" y="290.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="257.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="277.0" y="257.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <rect x="300" y="200" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="259.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="0" y="300" width="100" height="100" fill="#1d2b6b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="50.0" y="359.0" text-anchor="middle" font-size="30" font-weight="800" fill="#c9d4ff">H</text>
+        <rect x="100" y="300" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M100,300 L200,400 M200,300 L100,400" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="150.0" y="324.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="150.0" y="390.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="123.0" y="357.0" text-anchor="middle" font-size="14" font-weight="700" fill="#c8324a">−1</text>
+        <text x="177.0" y="357.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="200" y="300" width="100" height="100" fill="#dff7fb" stroke="#16233c" stroke-width="1.6"/>
+        <path d="M200,300 L300,400 M300,300 L200,400" stroke="#8697ad" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
+        <text x="250.0" y="324.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="250.0" y="390.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="223.0" y="357.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <text x="277.0" y="357.0" text-anchor="middle" font-size="14" font-weight="700" fill="#0b6c41">1</text>
+        <rect x="300" y="300" width="100" height="100" fill="#37c07b" stroke="#16233c" stroke-width="1.6"/>
+        <text x="350.0" y="359.0" text-anchor="middle" font-size="30" font-weight="800" fill="#0a4a2b">G</text>
+        </svg>
+        <p class="note">어느 칸을 봐도 <b>1</b>입니다.</p>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:.9rem">
+        <div class="card acc-w">
+          <h3>표가 “어느 쪽이 가까운지”를 말해 주지 않습니다</h3>
+          <p>출발 칸 <b>s0</b>을 보세요. <b>네 방향이 전부 1</b>입니다.
+            argmax를 해도 <b>넷 다 동점</b>이라 아무 방향이나 고르게 됩니다.</p>
+          <div class="hr"></div>
+          <p><b>6걸음</b>짜리 지름길도 <b>1</b>, <b>12걸음</b>짜리 돌아가는 길도 <b>1</b>.
+            어차피 마지막에 +1을 받으니 <b>총점이 같기 때문</b>입니다.</p>
+          <p class="note" style="margin-top:.5rem">8장에서 <code>G₀ = G₁ = G₂ = G₃ = 1</code> 이 나왔던 그 장면,
+            <b style="color:var(--warn)">“나중에 문제가 됩니다”</b> 라고 했던 게 바로 이겁니다.</p>
+        </div>
+    <div class="card acc-d step">
+      <h3>탐험만으로는 부족했습니다</h3>
+      <table class="tight" style="margin-top:.5rem">
+        <tr><th style="width:10rem">문제</th><th>표의 증상</th></tr>
+        <tr><td><b>안 가 봐서 모른다</b></td><td>표가 <b>비어 있다</b> &nbsp;→&nbsp; ε-그리디로 해결했습니다</td></tr>
+        <tr><td><b>가 봤는데 구분이 안 된다</b></td><td>표가 <b>전부 1이다</b> &nbsp;→&nbsp; <b style="color:var(--d)">아직 해결 못 했습니다</b></td></tr>
+      </table>
+      <p class="note" style="margin-top:.6rem"><b>알아내는 것</b>과 <b>비교하는 것</b>은 다른 일입니다.
+        다음 슬라이드에서 두 번째 문제를 풉니다.</p>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 ─ 감가율 -->
+<section class="slide dense">
+  <div class="top"><span class="tag a">γ · GAMMA</span><h2 style="margin-top:.5rem">늦게 받는 1점은, 지금 받는 1점보다 못하다</h2>
+    <p class="sub">표가 온통 1이 된 건 <b>먼 점수와 가까운 점수를 똑같이 취급</b>했기 때문입니다.
+      손잡이를 하나 더 답니다.</p></div>
+  <div class="body">
+    <div class="fml">γ (감가율, discount factor) — 한 걸음 멀어질 때마다 점수에 곱해 주는 값
+      <small>세 걸음 뒤의 +1점은 지금 기준으로 <b>γ × γ × γ × 1 = γ³</b>점의 가치</small></div>
+    <table class="gamma-tab tight">
+      <tr><th>γ</th><th>바로 앞 +1</th><th>1걸음 뒤</th><th>2걸음 뒤</th><th>3걸음 뒤</th><th style="text-align:left">이런 성격의 AI</th></tr>
+      <tr><td><b>0</b></td><td>1</td><td>0</td><td>0</td><td>0</td><td style="text-align:left">눈앞의 점수만 본다 — <b>밴딧이 바로 이 경우</b></td></tr>
+      <tr><td><b>0.5</b></td><td>1</td><td>0.5</td><td>0.25</td><td>0.125</td><td style="text-align:left">성격이 급하다. 먼 보상은 거의 안 보임</td></tr>
+      <tr><td><b>0.9</b></td><td>1</td><td>0.9</td><td>0.81</td><td>0.729</td><td style="text-align:left"><b style="color:var(--c)">멀리 보되, 지름길을 선호</b> — 가장 많이 쓰는 값</td></tr>
+      <tr><td><b>1</b></td><td>1</td><td>1</td><td>1</td><td>1</td><td style="text-align:left">100걸음을 돌아가도 똑같이 +1. <b>급할 게 없다</b></td></tr>
+    </table>
+    <div class="grid2 step">
+      <div class="card acc-c pad-s"><h3>γ &lt; 1이 하는 일 ①</h3>
+        <p class="sub">멀리 있는 보상일수록 값이 작아지니, <b>짧은 길이 저절로 더 높은 값</b>을 받습니다.
+          “빨리 가라”고 따로 시키지 않아도 됩니다.</p></div>
+      <div class="card acc pad-s"><h3>γ &lt; 1이 하는 일 ②</h3>
+        <p class="sub">끝이 없는 문제에서도 점수의 합이 <b>무한대로 튀지 않게</b> 눌러 줍니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 ─ ★ γ 넣고 다시 채우기 -->
+<section class="slide prac dense">
+  <div class="top" style="margin-bottom:.8rem">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap">
+      <div><span class="tag a">체험 · 2차</span>
+        <h2 style="margin-top:.35rem;font-size:2.1rem">γ를 넣고 <span style="color:var(--a)">다시</span> 채워 봅시다</h2></div>
+      <div class="knob-row">
+        <span class="mini">γ <select id="q2-gamma" onchange="Q2.setKnob()">
+          <option value="0.9" selected>0.9</option><option value="1">1</option>
+          <option value="0.5">0.5</option></select></span>
+        <button class="btn ghost" onclick="Q2.arrows()">화살표 보기</button>
+        <button class="btn ghost" onclick="Q2.auto()">AI에게 500판 맡기기</button>
+        <button class="btn ghost" onclick="Q2.reset()">표 비우기</button>
+      </div>
+    </div>
+  </div>
+  <div class="body" style="justify-content:flex-start">
+    <div class="row" style="align-items:flex-start;gap:1.5rem">
+
+      <div style="flex:0 0 26rem;display:flex;flex-direction:column;gap:.8rem">
+        <div class="gw" id="q2-gw"></div>
+        <div id="q2-peek"><span class="sub">칸을 <b>클릭</b>하면 그 칸의 max Q를 보여줍니다</span></div>
+        <div class="row" style="gap:1rem;align-items:center">
+          <div class="pad">
+            <span></span><button id="q2-pu" onclick="Q2.act(0)">↑</button><span></span>
+            <button id="q2-pl" onclick="Q2.act(2)">←</button>
+            <button id="q2-pd" onclick="Q2.act(1)">↓</button>
+            <button id="q2-pr" onclick="Q2.act(3)">→</button>
+          </div>
+          <div style="flex:1">
+            <div class="stat"><span class="k">에피소드</span><span class="v" id="q2-ep">1</span></div>
+            <p class="mini" style="margin-top:.3rem">움직인 횟수 <b id="q2-step">0</b> · 이번 판 점수 <b id="q2-ret">0</b></p>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;gap:.8rem">
+        <div class="calc" id="q2-calc">
+          <p class="mini" id="q2-guide">방향 버튼을 눌러 로봇을 움직이세요. 움직이면 여기에 계산할 식이 나타납니다.</p>
+          <div id="q2-form" style="display:none;flex-direction:column;gap:.55rem">
+            <div class="line"><span class="lb">방금 한 일</span>
+              <span id="q2-sa"></span></div>
+            <div class="hr" style="margin:.2rem 0"></div>
+            <div class="line"><span class="lb">① 도착 칸의 최고값</span>
+              <span>max<sub>a′</sub> Q(<b id="q2-sp"></b>, a′) =</span>
+              <input class="slotin" id="q2-in1" onkeydown="if(event.key==='Enter')Q2.check()">
+              <span class="mini" id="q2-h1">— a′ 자리에 ↑↓←→ 를 하나씩 넣어 보고, 그중 가장 큰 값</span></div>
+            <div class="line"><span class="lb">② 새 Q값</span>
+              <span><b id="q2-lhs" class="chip a"></b> = r + γ·max<sub>a′</sub> Q(s′, a′) &nbsp;=&nbsp; <span id="q2-r" class="chip"></span> +
+                <span id="q2-g" class="chip"></span> × ① =</span>
+              <input class="slotin" id="q2-in2" onkeydown="if(event.key==='Enter')Q2.check()">
+              <span class="mini">— 이 값이 그대로 표에 적힙니다</span></div>
+            <div class="row" style="gap:.6rem;margin-top:.3rem">
+              <button class="btn" onclick="Q2.check()">확인</button>
+              <button class="btn ghost" onclick="Q2.tell()">정답 보기</button>
+              <span class="mini" id="q2-fb" style="align-self:center"></span>
+            </div>
+          </div>
+        </div>
+        <div class="log" id="q2-log">기록이 여기에 쌓입니다.</div>
+        <div>
+          <p class="mini" style="margin-bottom:.3rem"><b>Q표</b> — 지금까지 채워진 값
+            <span class="sub">· 초록 배경이 그 줄의 최댓값</span></p>
+          <div id="q2-tbl"></div>
+        </div>
+        <p class="mini"><b>아까와 똑같은 길</b>로 가 보세요. 규칙도 격자도 그대로이고,
+          식에 <b>γ를 곱하는 것</b> 하나만 달라졌습니다.<br>
+          값이 1이 아니라 <b>1 → 0.9 → 0.81 → 0.729</b>로 나오면 성공입니다.
+          <span class="sub">γ를 1이나 0.5로 바꿔 가며 비교해 보세요.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23 ─ 알고리즘 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">ALGORITHM</div><h2>Q러닝 전체 — 이게 다입니다</h2>
+    <p class="sub">1989년 크리스 왓킨스(Chris Watkins)가 제안. 다음 시간에 이걸 그대로 코드로 옮깁니다.</p></div>
+  <div class="body">
+    <div class="row" style="gap:1.4rem;align-items:flex-start">
+      <div style="flex:1.15">
+        <pre><code>Q ← 모든 칸이 0인 9 × 4 표
+
+에피소드를 500번 반복:
+    s ← 시작 칸 (s0)
+    판이 끝날 때까지 반복:
+        a ← ε-그리디로 방향 하나 고르기        # 활용 or 탐험
+        s′, r, 끝났나 ← 환경.한칸이동(s, a)     # 실제로 움직인다
+
+        목표 ← r                              # 끝났으면 여기까지
+        if 안 끝났으면:
+            목표 ← r + γ · max Q(s′, a′)        # 옆 칸 값을 끌어온다
+
+        Q[s, a] ← 목표                         # 표에 적는다
+        s ← s′</code></pre>
+      </div>
+      <div style="flex:.85;display:flex;flex-direction:column;gap:.9rem">
+        <div class="card acc pad-s"><h3>기억할 것은 세 줄</h3>
+          <ul class="clean">
+            <li><b>고른다</b> — ε-그리디</li>
+            <li><b>겪는다</b> — s′, r을 받는다</li>
+            <li><b>적는다</b> — Q[s,a] ← r + γ·max Q(s′, a′)</li>
+          </ul></div>
+        <div class="card acc-b pad-s"><h3>두 개의 손잡이</h3>
+          <table class="tight">
+            <tr><td><b>γ</b></td><td>얼마나 멀리 볼까</td></tr>
+            <tr><td><b>ε</b></td><td>얼마나 헤맬까</td></tr>
+          </table>
+          <p class="note" style="margin-top:.5rem">다음 시간 실습의 마지막 과제가 <b>이 셋을 돌려 보는 것</b>입니다.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 24 ─ Q-hat 수렴 -->
+<section class="slide">
+  <div class="top"><span class="tag d">Q̂ · Q-hat</span><h2 style="margin-top:.5rem">우리가 표에 적은 건 “진짜 Q”가 아닙니다</h2>
+    <p class="sub">진짜 값 <b>Q<sup>*</sup></b>(optimal Q)는 아무도 모릅니다. 우리가 가진 건 <b>겪어 보고 추정한 값</b>입니다.</p></div>
+  <div class="body">
+    <div class="fml" style="font-size:1.6rem">
+      Q̂ &nbsp;<span style="color:var(--dim)">(학습 중인 우리 표)</span> &nbsp;→&nbsp;
+      Q<sup>*</sup> &nbsp;<span style="color:var(--dim)">(진짜 최적값 · optimal Q)</span>
+      <small>모자(hat)를 씌운 <b>Q̂</b>는 “추정치”라는 표시입니다</small>
+    </div>
+    <div class="card acc-c">
+      <h3>Q̂가 Q<sup>*</sup>에 <b>반드시</b> 도달한다고 증명된 조건</h3>
+      <table class="tight" style="margin-top:.5rem">
+        <tr><th style="width:16rem">조건</th><th>뜻</th><th>우리 호수는?</th></tr>
+        <tr><td><b>① 결정론적 세계</b><br><span class="sub">deterministic world</span></td>
+            <td>같은 칸에서 같은 방향 → <b>항상 같은 결과</b></td>
+            <td><b style="color:var(--c)">✓ 만족</b></td></tr>
+        <tr><td><b>② 상태·행동의 수가 유한</b></td>
+            <td>표를 <b>끝까지 적을 수 있다</b></td>
+            <td><b style="color:var(--c)">✓ 36칸</b></td></tr>
+        <tr><td><b>③ 모든 칸을 충분히 자주 방문</b></td>
+            <td>안 가 본 칸은 <b>영원히 모른다</b></td>
+            <td><b style="color:var(--c)">✓ ε-그리디</b></td></tr>
+      </table>
+      <p class="note" style="margin-top:.6rem">③번이 바로 <b>탐험을 해야 하는 이론적인 이유</b>입니다.
+        “가끔 딴 길로”는 취향이 아니라 <b>수렴의 조건</b>이었던 겁니다.</p>
+    </div>
+    <div class="grid2 step">
+      <div class="card acc-w pad-s"><h3>①이 깨지면 — 미끄러운 얼음</h3>
+        <p class="sub">같은 방향으로 가도 <b>미끄러져 딴 데로</b> 간다면, 한 번의 경험을 믿을 수 없습니다.
+          → 같은 칸을 <b>여러 번 겪어 평균</b>을 내야 하고, 그러려면 식에 <b>손잡이가 하나 더</b> 필요합니다.</p></div>
+      <div class="card acc-w pad-s"><h3>②가 깨지면 — 상태가 너무 많음</h3>
+        <p class="sub">표를 끝까지 적는 것이 <b>불가능</b>해집니다.
+          → 다음 슬라이드에서 이야기합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 25 ─ 비교 -->
+<section class="slide">
+  <div class="top"><div class="kicker">한눈에</div><h2>밴딧과 Q러닝, 무엇이 달라졌나</h2></div>
+  <div class="body">
+    <table>
+      <tr><th style="width:12rem"></th><th>밴딧 (2~3차시)</th><th>Q러닝 (오늘)</th></tr>
+      <tr><td><b>상태</b></td><td>하나뿐 — 볼 것이 없다</td><td><b>여러 개</b> — 내가 어디 있는지가 중요하다</td></tr>
+      <tr><td><b>기억</b></td><td>숫자 5개 (리스트)</td><td><b>상태 × 행동 표</b> (Q표) — 3×3이면 36칸, 4×4면 64칸</td></tr>
+      <tr><td><b>보상</b></td><td>즉시 도착</td><td><b>대부분 0</b>, 끝에서만 ±1</td></tr>
+      <tr><td><b>Q값 계산</b></td><td>받은 점수의 평균</td><td><b>r + γ·max Q(s′, a′)</b> — 옆 칸에서 끌어옴</td></tr>
+      <tr><td><b>γ</b></td><td>필요 없음 (=0)</td><td><b>0.9</b> — 멀수록 깎는다</td></tr>
+      <tr><td><b>탐험</b></td><td>ε-그리디 / 톰슨 샘플링</td><td>ε-그리디 <span class="sub">(그대로 재사용)</span></td></tr>
+    </table>
+    <div class="card acc-c step">
+      <p style="font-size:1.25rem">밴딧에서 배운 것은 하나도 버려지지 않았습니다.
+        <em>거기에 “상태”와 “미래”를 얹은 것</em>이 Q러닝입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 26 ─ 한계 -->
+<section class="slide center">
+  <div class="body center">
+    <div class="kicker">Q러닝의 한계</div>
+    <h1 style="font-size:2.9rem">우리 표는 기껏해야 <span style="color:var(--a)">64칸</span>이었습니다</h1>
+    <div class="hr" style="width:26rem"></div>
+    <div class="grid3" style="width:100%;max-width:64rem;text-align:left;margin-top:.6rem">
+      <div class="card acc pad-s"><h3>4×4 얼음 호수</h3><p class="sub">상태 16개 → 표 <b>64칸</b>. 종이에 그릴 수 있음</p></div>
+      <div class="card acc-b pad-s"><h3>틱택토</h3><p class="sub">상태 약 <b>5,478개</b>. 아직은 표로 가능</p></div>
+      <div class="card acc-w pad-s"><h3>바둑</h3><p class="sub">상태 약 <b>10<sup>170</sup>개</b>. 우주의 원자 수보다 많음 — <b>표가 불가능</b></p></div>
+    </div>
+    <p class="note" style="margin-top:1.4rem;font-size:1.2rem">“표를 다 적을 수 없다면, <b class="hl">표 대신 계산해 주는 무언가</b>를 두면 되지 않을까?”</p>
+    <div class="card acc-d pad-s" style="max-width:58rem;margin-top:1rem;text-align:left">
+      <p>그 “무언가”로 <b>신경망</b>을 쓰는 방법이 있습니다. 이름은 <b>딥 Q 네트워크(DQN)</b> —
+        2015년에 아타리 게임 49종을 사람 수준으로 플레이해 화제가 된 그 방법입니다.</p>
+      <p class="note" style="margin-top:.5rem">놀랍게도 <b>벨만 방정식도, ε-그리디도, 오늘 배운 것 그대로</b>입니다.
+        <em>표를 신경망으로 바꾼 것뿐</em>이죠. 다만 그 앞은 <b>딥러닝의 영역</b>이라,
+        오늘은 <b>이런 길이 있다는 것만</b> 알고 넘어갑니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 27 ─ 정리 -->
+<section class="slide">
+  <div class="top"><div class="kicker">WRAP UP</div><h2>오늘 정리 · 다음 시간</h2></div>
+  <div class="body">
+    <div class="grid2">
+      <div class="card acc">
+        <h3>오늘 손에 넣은 것</h3>
+        <ul class="clean">
+          <li><b>Q(s,a)</b> — 이 칸에서 이 방향으로 갔을 때 끝까지 받을 점수</li>
+          <li><b>정책</b> — π(s) = argmax<sub>a</sub> Q(s,a)</li>
+          <li><b>벨만 방정식</b> — 처음엔 <code>Q = r + max Q(s′,a′)</code></li>
+          <li><b>ε을 달았다</b> — 안 가 본 칸을 <b>알아내기</b> 위해</li>
+          <li><b>γ를 달았다</b> — 전부 1인 표에서 <b>가까운 길을 고르기</b> 위해</li>
+          <li>그래서 완성된 식 — <code>Q(s,a) ← r + γ·max Q(s′,a′)</code></li>
+        </ul>
+      </div>
+      <div class="card acc-d">
+        <h3>5차시 · 실습 3</h3>
+        <p>오늘 <b>손으로 계산한 그 한 줄</b>을 파이썬으로 옮깁니다.</p>
+        <table class="tight" style="margin-top:.6rem">
+          <tr><td>①</td><td>ε-그리디로 방향 고르기</td></tr>
+          <tr><td>②</td><td><b>Q 업데이트 한 줄</b> ← 오늘의 핵심</td></tr>
+          <tr><td>③</td><td>학습 루프 돌리기</td></tr>
+          <tr><td>④</td><td>Q표를 그림으로 보기 · γ / ε 실험</td></tr>
+        </table>
+        <p class="note" style="margin-top:.6rem">지도는 <b>5×5로 넓어지고</b>, 가까운 곳에 <b>작은 보물 +0.2</b>가 놓여 있습니다.
+          그리디가 정말 거기에 갇히는지 <b>직접 확인</b>합니다.</p>
+      </div>
+    </div>
+    <div class="card acc-c step center">
+      <p style="font-size:1.3rem">“오늘 여러분이 연필로 한 계산을, 다음 시간엔 <em>컴퓨터가 초당 수만 번</em> 합니다.
+        <b>식은 똑같습니다.</b>”</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="bar" id="bar"></div>
+<div class="brand">인공지능 일반 · 4차시</div>
+<div class="hud">
+  <span id="hint">▾ 클릭</span>
+  <button onclick="go(-1)" title="이전">‹</button>
+  <span id="cnt">1 / 27</span>
+  <button onclick="go(1)" title="다음">›</button>
+  <button onclick="fs()" title="전체화면">⛶</button>
+</div>
+
+<script>
+/* ══════════ 슬라이드 네비게이션 ══════════ */
+const S = Array.from(document.querySelectorAll('.slide'));
+let i = 0;
+function stepsOf(n){ return Array.from(S[n].querySelectorAll('.step')); }
+function updateHint(){
+  const left = stepsOf(i).some(e => !e.classList.contains('in'));
+  document.getElementById('hint').style.visibility = left ? 'visible' : 'hidden';
+}
+function syncBlind(){
+  document.querySelectorAll('[data-blind]').forEach(e => {
+    const g = document.getElementById(e.dataset.blind);
+    const on = e.classList.contains('in');
+    if (g) g.classList.toggle('blind', on);
+    const cap = document.getElementById(e.dataset.blind + '-cap');
+    if (cap) cap.classList.toggle('on', on);
+  });
+}
+function show(n, all){
+  i = Math.max(0, Math.min(S.length - 1, n));
+  S.forEach((s, k) => s.classList.toggle('on', k === i));
+  stepsOf(i).forEach(e => e.classList.toggle('in', !!all));
+  document.getElementById('cnt').textContent = (i + 1) + ' / ' + S.length;
+  document.getElementById('bar').style.width = ((i + 1) / S.length * 100) + '%';
+  S[i].scrollTop = 0;
+  updateHint();
+  syncBlind();
+  if (S[i].dataset && S[i].dataset.init){
+    const [nm, arg] = S[i].dataset.init.split(':');
+    if (window[nm]) window[nm].play(arg);
+  }
+}
+function nextStep(){
+  const e = stepsOf(i).find(x => !x.classList.contains('in'));
+  if (e) {
+    e.classList.add('in'); updateHint(); syncBlind();
+    if (e.dataset.play){
+      const [nm, arg] = e.dataset.play.split(':');
+      if (window[nm]) setTimeout(() => window[nm].play(arg), 250);
+    }
+    return true;
+  }
+  return false;
+}
+function go(d){
+  if (d > 0 && nextStep()) return;
+  show(i + d, d < 0);
+}
+document.getElementById('deck').addEventListener('click', e => {
+  if (e.target.closest('input, textarea, button, a, select, canvas, .gw, .calc')) return;
+  nextStep();
+});
+function fs(){ document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
+document.addEventListener('keydown', e => {
+  const t = e.target.tagName;
+  if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') return;
+  if (['ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); go(1); }
+  else if (['ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+  else if (e.key === 'Home') show(0);
+  else if (e.key === 'End') show(S.length - 1);
+  else if (e.key.toLowerCase() === 'f') fs();
+});
+
+/* ══════════ 계산 예시 격자 ══════════ */
+const EX = (function(){
+  const GOAL = 8, PIT = 4;
+  const CASES = {
+    1: { from: 0, moves: [{ a: '↓', to: 3 }], vals: { 3: ['0','0','0','0'] },
+         cap: '<b style="color:var(--a)">s0</b> 에서 <b>↓</b> → <b style="color:var(--d)">s3</b> 도착<br>' +
+              '<span class="sub">s3의 네 값이 아직 전부 0입니다</span>' },
+    2: { from: 7, moves: [{ a: '→', to: 8 }, { a: '↑', to: 4 }], vals: {},
+         cap: '<b style="color:var(--a)">s7</b> 에서 <b>→</b> 또는 <b>↑</b><br>' +
+              '<span class="sub">둘 다 <b>종료 칸</b>입니다 — 받은 보상이 그대로 Q값</span>' },
+    3: { from: 6, moves: [{ a: '→', to: 7 }], vals: { 7: ['−1','0','0','1'] },
+         cap: '<b style="color:var(--a)">s6</b> 에서 <b>→</b> → <b style="color:var(--d)">s7</b> 도착<br>' +
+              '<span class="sub">s7에 ②에서 구한 값이 들어 있습니다</span>' }
+  };
+  function play(n){
+    const c = CASES[+n] || CASES[1];
+    const tos = c.moves.map(m => m.to);
+    let h = '';
+    for (let s = 0; s < 9; s++){
+      const on = (s === c.from || tos.indexOf(s) >= 0);
+      let cls = s === GOAL ? 'goal' : s === PIT ? 'pit' : '';
+      if (s === c.from) cls += ' ex-from';
+      else if (tos.indexOf(s) >= 0) cls += ' ex-to';
+      else cls += ' dimmed';
+      h += `<div class="gwc ${cls}"><span class="sid">s${s}</span>`;
+      if (s === GOAL)      h += `<span class="face">🏁</span><span class="term" style="position:absolute;bottom:.15rem">+1</span>`;
+      else if (s === PIT)  h += `<span class="face">🕳️</span><span class="term" style="position:absolute;bottom:.15rem">−1</span>`;
+      if (s === c.from){
+        h += `<span class="face">🤖</span>`;
+        c.moves.forEach((m, k) => {
+          const pos = m.a === '→' ? 'right:.25rem;top:50%;transform:translateY(-50%)'
+                    : m.a === '↑' ? 'top:.15rem;left:50%;transform:translateX(-50%)'
+                    : m.a === '↓' ? 'bottom:.15rem;left:50%;transform:translateX(-50%)'
+                    : 'left:.25rem;top:50%;transform:translateY(-50%)';
+          h += `<span class="ex-arrow" style="${pos}">${m.a}</span>`;
+        });
+      }
+      const v = c.vals[s];
+      if (v){
+        h += `<span class="qv u">${v[0]}</span><span class="qv d">${v[1]}</span>` +
+             `<span class="qv l">${v[2]}</span><span class="qv r">${v[3]}</span>`;
+      }
+      h += `</div>`;
+    }
+    document.getElementById('ex-gw').innerHTML = h;
+    document.getElementById('ex-cap').innerHTML = c.cap;
+  }
+  play(1);
+  return { play };
+})();
+window.EX = EX;
+
+/* ══════════ G 계산 애니메이션 ══════════ */
+const GA = (function(){
+  let timers = [];
+  const $ = id => document.getElementById(id);
+  const rows = [0,1,2,3].map(k => $('ga' + k));
+  const vals = [0,1,2,3].map(k => $('gv' + k));
+
+  function clearT(){ timers.forEach(clearTimeout); timers = []; }
+  function at(ms, f){ timers.push(setTimeout(f, ms)); }
+  function cap(html){ $('ga-cap').innerHTML = html; }
+  function focus(k, dimRest){
+    rows.forEach((r, j) => {
+      r.classList.toggle('on', j === k);
+      r.classList.toggle('dim', dimRest ? j > k : false);
+    });
+  }
+  function set(k, txt){
+    const v = vals[k];
+    v.textContent = txt; v.className = 'gv done pop';
+    at(600, () => v.classList.remove('pop'));
+  }
+  function reset(){
+    clearT();
+    rows.forEach(r => { r.classList.remove('on'); r.classList.add('dim'); });
+    vals.forEach(v => { v.textContent = '?'; v.className = 'gv unknown'; });
+    $('ga3n').textContent = '';
+    cap('▶ 버튼을 눌러 <b>첫 걸음부터</b> 계산해 보세요.');
+  }
+  function play(){
+    reset();
+    at(250, () => { focus(0, true);
+      cap('G<sub>0</sub> = 0 + <b>G<sub>1</sub></b> &nbsp;…&nbsp; <b style="color:var(--warn)">G<sub>1</sub>을 모르니 계산이 안 됩니다.</b>'); });
+    at(1700, () => { focus(1, true);
+      cap('그럼 G<sub>1</sub>부터? &nbsp;…&nbsp; <b style="color:var(--warn)">이번엔 G<sub>2</sub>를 모릅니다.</b>'); });
+    at(3100, () => { focus(2, true);
+      cap('G<sub>2</sub>도 마찬가지 &nbsp;…&nbsp; <b style="color:var(--warn)">계속 뒤로 밀립니다.</b>'); });
+    at(4500, () => { focus(3, true); set(3, '1');
+      $('ga3n').textContent = '← 판이 끝났으니 바로 안다';
+      cap('<b style="color:var(--c)">마지막 걸음에서 +1을 받고 판이 끝납니다. 여기는 계산할 것이 없어요.</b>'); });
+    at(6100, () => { focus(2, false); set(2, '1');
+      cap('그러면 &nbsp;G<sub>2</sub> = 0 + <b>1</b> = <b style="color:var(--c)">1</b>'); });
+    at(6800, () => { focus(1, false); set(1, '1');
+      cap('&nbsp;G<sub>1</sub> = 0 + <b>1</b> = <b style="color:var(--c)">1</b>'); });
+    at(7500, () => { focus(0, false); set(0, '1');
+      cap('&nbsp;G<sub>0</sub> = 0 + <b>1</b> = <b style="color:var(--c)">1</b>'); });
+    at(8400, () => { rows.forEach(r => r.classList.remove('on', 'dim'));
+      cap('값은 <b>끝에서부터 거꾸로</b> 채워집니다. 네 걸음이 <b>전부 1</b> — ' +
+          '<b style="color:var(--warn)">기억해 두세요</b>, 나중에 이게 문제가 됩니다.'); });
+  }
+  reset();
+  return { play, reset };
+})();
+window.GA = GA;   // step 자동 재생 훅에서 참조
+
+/* ══════════ Q표 손으로 채우기 ══════════ */
+function makeQ(cfg){
+  const P = cfg.p, NM = cfg.name;
+  const $ = id => document.getElementById(P + id);
+  const GOAL = 8, PIT = 4, START = 0;
+  const ACT  = ['↑','↓','←','→'];
+  const NAME = s => 's' + s;
+
+  let q, pos, ep, steps, ret, pend, peeked = -1, arrowsOn = false;
+  const alpha = 1;
+  let gamma = cfg.gamma;
+
+  const term = s => (s === GOAL || s === PIT);
+  const rewardOf = s => (s === GOAL ? 1 : s === PIT ? -1 : 0);
+  const r3 = v => Math.round(v * 1000) / 1000;
+
+  function fmt(v){
+    if (Math.abs(v) < 1e-9) return '0';
+    let t = v.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
+    return t;
+  }
+  function move(s, a){
+    let r = Math.floor(s / 3), c = s % 3;
+    if (a === 0) r--; else if (a === 1) r++; else if (a === 2) c--; else c++;
+    if (r < 0 || r > 2 || c < 0 || c > 2) return s;    // 벽 → 제자리
+    return r * 3 + c;
+  }
+  const maxQ = s => Math.max.apply(null, q[s]);
+
+  /* ── 화면 만들기 ── */
+  function build(){
+    const g = $('gw');
+    let h = '';
+    for (let s = 0; s < 9; s++){
+      const cls = s === GOAL ? ' goal' : s === PIT ? ' pit' : '';
+      h += `<div class="gwc${cls} clickable" id="${P}c${s}" onclick="${NM}.peek(${s})" title="클릭하면 max Q를 봅니다"><span class="sid">${NAME(s)}</span>`;
+      if (s === GOAL)      h += `<span class="face">🏁</span><span class="term" style="position:absolute;bottom:.25rem">+1</span>`;
+      else if (s === PIT)  h += `<span class="face">🕳️</span><span class="term" style="position:absolute;bottom:.25rem">−1</span>`;
+      else {
+        h += `<span class="qv u" id="${P}q${s}0">0</span><span class="qv d" id="${P}q${s}1">0</span>`;
+        h += `<span class="qv l" id="${P}q${s}2">0</span><span class="qv r" id="${P}q${s}3">0</span>`;
+        h += `<span class="arrow" id="${P}ar${s}"></span>`;
+      }
+      h += `<span class="face bot" id="${P}b${s}" style="display:none">🤖</span></div>`;
+    }
+    g.innerHTML = h;
+  }
+
+  function render(){
+    for (let s = 0; s < 9; s++){
+      $('c' + s).classList.toggle('here', s === pos);
+      const bot = $('b' + s);
+      if (bot) bot.style.display = (s === pos && !term(s)) ? '' : 'none';
+      if (term(s)) continue;
+      const best = maxQ(s), any = q[s].some(v => Math.abs(v) > 1e-9);
+      for (let a = 0; a < 4; a++){
+        const el = $('q' + s + a), v = q[s][a];
+        el.textContent = fmt(v);
+        el.classList.toggle('pos', v > 1e-9);
+        el.classList.toggle('neg', v < -1e-9);
+        el.classList.toggle('best', any && Math.abs(v - best) < 1e-9);
+      }
+      const ar = $('ar' + s);
+      ar.textContent = (arrowsOn && any) ? ACT[q[s].indexOf(best)] : '';
+    }
+    $('ep').textContent   = ep;
+    $('step').textContent = steps;
+    $('ret').textContent  = fmt(ret);
+    const dis = !!pend;
+    ['pu','pd','pl','pr'].forEach(id => $(id).disabled = dis);
+    renderTable();
+  }
+
+  function renderTable(){
+    let t = '<table class="qtbl"><tr><th>상태</th><th>↑</th><th>↓</th><th>←</th><th>→</th><th>max</th></tr>';
+    for (let s = 0; s < 9; s++){
+      if (term(s)){
+        t += `<tr class="qt-term"><td>${NAME(s)}</td><td colspan="5">` +
+             `${s === GOAL ? '🏁 목표 +1' : '🕳️ 구덩이 −1'} — 종료 칸 · max Q = 0</td></tr>`;
+        continue;
+      }
+      const m = maxQ(s), any = q[s].some(v => Math.abs(v) > 1e-9);
+      const rc = (s === peeked ? ' class="qt-peek"' : (s === pos ? ' class="qt-here"' : ''));
+      t += `<tr${rc}><td><b>${NAME(s)}</b></td>`;
+      for (let a = 0; a < 4; a++){
+        const v = q[s][a];
+        const cls = Math.abs(v) < 1e-9 ? 'z' : (v > 0 ? 'p' : 'n');
+        t += `<td class="${cls}${any && Math.abs(v - m) < 1e-9 ? ' best' : ''}" id="${P}t${s}${a}">${fmt(v)}</td>`;
+      }
+      t += `<td class="mx">${fmt(m)}</td></tr>`;
+    }
+    $('tbl').innerHTML = t + '</table>';
+  }
+
+  function peek(s){
+    peeked = s;
+    const el = $('peek');
+    if (term(s)){
+      el.innerHTML = `max Q(<b>${NAME(s)}</b>, a′) = <span class="chip">0</span>` +
+                     `<span class="sub" style="margin-left:.5rem">종료 칸 — 이어질 미래가 없습니다</span>`;
+    } else {
+      const m = maxQ(s);
+      const cls = m > 1e-9 ? ' g' : (m < -1e-9 ? ' w' : '');
+      el.innerHTML = `max Q(<b>${NAME(s)}</b>, a′) = max(${q[s].map(v => fmt(v)).join(', ')})` +
+                     ` = <span class="chip${cls}">${fmt(m)}</span>`;
+    }
+    renderTable();
+  }
+
+  function log(html){
+    const el = $('log');
+    if (el.dataset.clean !== '1'){ el.innerHTML = ''; el.dataset.clean = '1'; }
+    el.innerHTML += html + '<br>';
+    el.scrollTop = el.scrollHeight;
+  }
+
+  /* ── 한 걸음 ── */
+  function act(a){
+    if (pend) return;
+    const s  = pos;
+    if (term(s)) return;
+    const sp = move(s, a);
+    const r  = rewardOf(sp);
+    const done = term(sp);
+    const mx = done ? 0 : maxQ(sp);
+    const e2 = r3(r + gamma * mx);
+    const e3 = r3(q[s][a] + alpha * (e2 - q[s][a]));
+
+    pend = { s, a, sp, r, done, e1: r3(mx), e2, e3 };
+    pos  = sp;                                  // 로봇은 바로 이동
+    $('guide').style.display = 'none';
+    $('form').style.display  = 'flex';
+    $('sa').innerHTML =
+      `<span class="chip a">${NAME(s)}</span> 에서 <span class="chip a">${ACT[a]}</span> ` +
+      `→ 도착 <span class="chip${done ? (r > 0 ? ' g' : ' w') : ''}">${sp === s ? NAME(s) + ' (벽!)' : NAME(sp)}</span>` +
+      (done ? ` <b style="color:${r > 0 ? 'var(--c)' : 'var(--warn)'}">종료!</b>` : '');
+    $('sp').textContent  = NAME(sp);
+    $('h1').textContent = done
+      ? '— 종료 칸이라 이어질 미래가 없습니다. max Q = 0'
+      : (sp === s ? '— 제자리! 원래 칸의 네 숫자 중 최댓값' : '— a′ 자리에 ↑↓←→ 를 하나씩 넣어 본 넷 중 가장 큰 값 (칸을 클릭해도 됩니다)');
+    $('r').textContent   = r;
+    $('lhs').textContent = `Q(${NAME(s)}, ${ACT[a]})`;
+    const gEl = $('g'); if (gEl) gEl.textContent = gamma;   // γ 칩 (21장 전용)
+    ['in1','in2'].forEach(id => {
+      const el = $(id);
+      el.value = ''; el.className = 'slotin'; el.disabled = false;
+    });
+    $('fb').textContent = '';
+    $('in1').focus();
+    render();
+  }
+
+  function grade(id, want){
+    const el = $(id);
+    const v  = parseFloat(el.value.replace(/\s/g, ''));
+    const ok = isFinite(v) && Math.abs(v - want) < 0.0015;
+    el.classList.remove('ok', 'no');
+    el.classList.add(ok ? 'ok' : 'no');
+    return ok;
+  }
+
+  function check(){
+    if (!pend) return;
+    const a = grade('in1', pend.e1), b = grade('in2', pend.e2);
+    const fb = $('fb');
+    if (a && b){ fb.innerHTML = '<b style="color:var(--c)">정확합니다!</b>'; apply(false); }
+    else {
+      const bad = [!a && '①', !b && '②'].filter(Boolean).join(' ');
+      fb.innerHTML = `<b style="color:var(--warn)">${bad} 번을 다시 보세요.</b>` +
+        (!a ? ' 도착 칸의 <b>네 숫자</b>를 보고 가장 큰 것을 적습니다.' : '');
+    }
+  }
+
+  function tell(){
+    if (!pend) return;
+    $('in1').value = fmt(pend.e1);
+    $('in2').value = fmt(pend.e2);
+    ['in1','in2'].forEach(id => { const e = $(id); e.className = 'slotin ok'; });
+    $('fb').innerHTML = '<span class="sub">정답을 채웠습니다. 왜 이 값인지 소리 내어 말해 보세요.</span>';
+    apply(true);
+  }
+
+  function apply(helped){
+    const p = pend;
+    const before = q[p.s][p.a];
+    q[p.s][p.a] = p.e3;
+    steps++; ret = r3(ret + p.r);
+    log(`E${ep}·${steps} &nbsp;<b>${NAME(p.s)} ${ACT[p.a]}</b> → ${NAME(p.sp)} · r=${p.r} · ` +
+        `Q(${NAME(p.s)},${ACT[p.a]}) <b>${fmt(before)} → ${fmt(p.e3)}</b>${helped ? ' <span style="color:#b06a00">(도움)</span>' : ''}`);
+    pend = null;
+    ['in1','in2'].forEach(id => $(id).disabled = true);
+    render();
+    const cell = $('q' + p.s + p.a);
+    if (cell){ cell.classList.remove('flash'); void cell.offsetWidth; cell.classList.add('flash'); }
+    const tcell = $('t' + p.s + p.a);
+    if (tcell){ tcell.classList.remove('flash2'); void tcell.offsetWidth; tcell.classList.add('flash2'); }
+
+    const fb = $('fb');
+    const head = fb.innerHTML;
+    if (p.done){
+      log(`<b style="color:${p.r > 0 ? 'var(--c)' : 'var(--warn)'}">— 에피소드 ${ep} 종료 (점수 ${fmt(ret)}) —</b>`);
+      const col = p.r > 0 ? 'var(--c)' : 'var(--warn)';
+      ep++; pos = START; steps = 0; ret = 0;
+      fb.innerHTML = head +
+        ` <b style="color:${col}">에피소드 ${ep - 1} 종료!</b>` +
+        ` <span class="sub">로봇이 ${NAME(START)}으로 돌아왔습니다. 방향 버튼을 눌러 <b>${ep}번째 판</b>을 시작하세요.</span>`;
+    } else {
+      fb.innerHTML = head + ' <span class="sub">— 방향 버튼을 눌러 다음 걸음으로.</span>';
+    }
+    render();
+  }
+
+  /* ── 컨트롤 ── */
+  function arrows(){ arrowsOn = !arrowsOn; render(); }
+
+  function setKnob(){
+    gamma = parseFloat($('gamma').value);
+    log(`<span class="sub">γ = ${gamma} 로 바꿨습니다. 표를 비우고 다시 해 보세요.</span>`);
+  }
+
+  function auto(){
+    const EPS = 0.3, EPISODES = 500;
+    for (let e = 0; e < EPISODES; e++){
+      let s = START;
+      for (let t = 0; t < 60; t++){
+        let a;
+        if (Math.random() < EPS) a = Math.floor(Math.random() * 4);
+        else { const m = maxQ(s); const c = [0,1,2,3].filter(k => q[s][k] === m); a = c[Math.floor(Math.random() * c.length)]; }
+        const sp = move(s, a), r = rewardOf(sp), done = term(sp);
+        const tg = done ? r : r + gamma * maxQ(sp);
+        q[s][a] = r3(q[s][a] + alpha * (tg - q[s][a]));
+        s = sp;
+        if (done) break;
+      }
+    }
+    arrowsOn = true;
+    log(`<b>AI가 ${EPISODES}판을 혼자 돌렸습니다</b> (ε=0.3, γ=${gamma}). 각 칸의 화살표를 따라가 보세요.`);
+    render();
+  }
+
+  function reset(){
+    q = Array.from({length: 9}, () => [0,0,0,0]);
+    pos = START; ep = 1; steps = 0; ret = 0; pend = null; arrowsOn = false; peeked = -1;
+    const el = $('log');
+    el.dataset.clean = '0'; el.innerHTML = '기록이 여기에 쌓입니다.';
+    $('form').style.display  = 'none';
+    $('guide').style.display = '';
+    $('guide').innerHTML =
+      '방향 버튼을 눌러 로봇을 움직이세요. 움직이면 여기에 계산할 식이 나타납니다.';
+    $('peek').innerHTML =
+      '<span class="sub">칸을 <b>클릭</b>하면 그 칸의 max Q를 보여줍니다</span>';
+    render();
+  }
+
+  build();
+  reset();
+  return { act, check, tell, reset, auto, arrows, peek, setKnob };
+}
+
+const Q  = makeQ({ p: 'q-',  name: 'Q',  gamma: 1   });   // 13장 · γ 없이
+const Q2 = makeQ({ p: 'q2-', name: 'Q2', gamma: 0.9 });   // γ 연습
+window.Q = Q; window.Q2 = Q2;
+
+show(0);
+</script>
+</body>
+</html>

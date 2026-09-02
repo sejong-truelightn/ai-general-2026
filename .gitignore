@@ -1,0 +1,19 @@
+# ── macOS ──
+.DS_Store
+
+# ── 배포 제외: 교과서 원문 PDF (저작권) ──
+*.pdf
+
+# ── 배포 제외: 교사용 풀이 완성본 ──
+실습2_톰슨샘플링.ipynb
+실습2_톰슨샘플링_풀이가이드.html
+실습2_톰슨샘플링_풀이가이드 복사본.html
+실습2_톰슨샘플링_풀이가이드.html.zip
+실습3_Q러닝.ipynb
+
+# ── 작업용 로컬 파일 ──
+exgrid.py
+.claude-account
+.claude/
+.ipynb_checkpoints/
+__pycache__/
