@@ -6,9 +6,9 @@
 
 | 차시 | 내용 | 웹에서 보기 | 파일 받기 |
 |---|---|---|---|
-| 1차시 | ML 개관과 강화학습 5원칙 | [열기](https://sejong-truelightn.github.io/ai-general-2026/1%EC%B0%A8%EC%8B%9C_ML%EA%B0%9C%EA%B4%80%EA%B3%BC_%EA%B0%95%ED%99%94%ED%95%99%EC%8A%B5_5%EC%9B%90%EC%B9%99.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/1.html) |
-| 2차시 | 밴딧 문제와 탐험·활용 | [열기](https://sejong-truelightn.github.io/ai-general-2026/2%EC%B0%A8%EC%8B%9C_%EB%B0%B4%EB%94%A7%EB%AC%B8%EC%A0%9C%EC%99%80_%ED%83%90%ED%97%98%ED%99%9C%EC%9A%A9.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/2.html) |
-| 4차시 | Q러닝과 벨만 방정식 | [열기](https://sejong-truelightn.github.io/ai-general-2026/4%EC%B0%A8%EC%8B%9C_Q%EB%9F%AC%EB%8B%9D%EA%B3%BC_%EB%B2%A8%EB%A7%8C%EB%B0%A9%EC%A0%95%EC%8B%9D.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/4.html) |
+| 1차시 | ML 개관과 강화학습 5원칙 | [열기](https://sejong-truelightn.github.io/ai-general-2026/1%EC%B0%A8%EC%8B%9C_ML%EA%B0%9C%EA%B4%80%EA%B3%BC_%EA%B0%95%ED%99%94%ED%95%99%EC%8A%B5_5%EC%9B%90%EC%B9%99.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/1.html)<br><sub>2026-09-02 업데이트</sub> |
+| 2차시 | 밴딧 문제와 탐험·활용 | [열기](https://sejong-truelightn.github.io/ai-general-2026/2%EC%B0%A8%EC%8B%9C_%EB%B0%B4%EB%94%A7%EB%AC%B8%EC%A0%9C%EC%99%80_%ED%83%90%ED%97%98%ED%99%9C%EC%9A%A9.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/2.html)<br><sub>2026-09-02 업데이트</sub> |
+| 4차시 | Q러닝과 벨만 방정식 | [열기](https://sejong-truelightn.github.io/ai-general-2026/4%EC%B0%A8%EC%8B%9C_Q%EB%9F%AC%EB%8B%9D%EA%B3%BC_%EB%B2%A8%EB%A7%8C%EB%B0%A9%EC%A0%95%EC%8B%9D.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/4.html)<br><sub>2026-09-04 업데이트</sub> |
 
 전체 자료를 한 번에 받으려면 → [**ZIP으로 내려받기**](https://github.com/sejong-truelightn/ai-general-2026/archive/refs/heads/main.zip)
 
@@ -19,7 +19,7 @@
 
 | 실습 | 내용 | 열기 | 풀이 가이드 | 답 |
 |---|---|---|---|---|
-| 실습 2 | 톰슨 샘플링 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb) | [보기](https://sejong-truelightn.github.io/ai-general-2026/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81_%ED%92%80%EC%9D%B4%EA%B0%80%EC%9D%B4%EB%93%9C.html) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81.ipynb) |
+| 실습 2 | 톰슨 샘플링 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb) | [보기](https://sejong-truelightn.github.io/ai-general-2026/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81_%ED%92%80%EC%9D%B4%EA%B0%80%EC%9D%B4%EB%93%9C.html) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81.ipynb)<br><sub>2026-09-02 업데이트</sub> |
 | 실습 3 | 그리드월드와 Q러닝 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B53_Q%EB%9F%AC%EB%8B%9D_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb) | _수업 후 공개_ | _수업 후 공개_ |
 
 > **풀이 가이드**는 빈칸을 어떻게 채우는지 설명한 해설이고, **답**은 빈칸이 모두 채워진 완성본입니다.
