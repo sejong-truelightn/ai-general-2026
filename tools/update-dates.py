@@ -14,9 +14,10 @@ README = ROOT / 'README.md'
 MARK = re.compile(r'(<!--date:(?P<f>[^>]+?)-->)\s*(?:\d{4}-\d{2}-\d{2} 업데이트)?')
 
 def staged_files():
-    out = subprocess.run(['git', 'diff', '--cached', '--name-only'],
+    # -z 로 받아야 한글 경로가 이스케이프되지 않는다
+    out = subprocess.run(['git', 'diff', '--cached', '--name-only', '-z'],
                          cwd=ROOT, capture_output=True, text=True).stdout
-    return set(out.split('\n'))
+    return {f for f in out.split('\0') if f}
 
 def last_commit_date(path):
     out = subprocess.run(
