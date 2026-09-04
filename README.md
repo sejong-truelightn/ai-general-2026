@@ -12,6 +12,11 @@
 
 전체 자료를 한 번에 받으려면 → [**ZIP으로 내려받기**](https://github.com/sejong-truelightn/ai-general-2026/archive/refs/heads/main.zip)
 
+## 최근 업데이트
+
+<!--changelog-->
+<!--/changelog-->
+
 ## 실습 노트북
 
 링크를 누르면 **Google Colab**에서 열립니다. 구글 계정으로 로그인한 뒤,
@@ -27,5 +32,5 @@
 
 ---
 
-<sub>강의자료·답 옆의 날짜는 커밋할 때 `.githooks/pre-commit` 이 자동으로 갱신합니다.
+<sub>강의자료·답 옆의 날짜와 위 ‘최근 업데이트’ 목록은 커밋할 때 `.githooks/` 의 훅이 자동으로 갱신합니다.
 다른 컴퓨터에서 처음 클론했다면 한 번만 `git config core.hooksPath .githooks` 를 실행하세요.</sub>
