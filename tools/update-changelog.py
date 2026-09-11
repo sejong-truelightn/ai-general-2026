@@ -64,9 +64,9 @@ def main():
         if l not in labels:
             labels.append(l)
 
-    # 메시지가 이미 "4차시: ..." 처럼 시작하면 라벨을 겹쳐 적지 않는다
+    # 메시지가 이미 "4차시: ..." 나 "실습3 학생용: ..." 처럼 시작하면 라벨을 겹쳐 적지 않는다
     for l in labels:
-        m = re.match(r'^' + re.escape(l) + r'\s*[:：·—-]\s*', subject)
+        m = re.match(r'^' + re.escape(l) + r'\s*(?:[:：·—-]\s*|\s)', subject)
         if m:
             subject = subject[m.end():]
             break
