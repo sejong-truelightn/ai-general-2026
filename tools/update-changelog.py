@@ -7,7 +7,11 @@ README 안의 이 블록 사이에 쌓인다:
     - **2026-09-04** · 4차시 — γ 값 비교 슬라이드 추가
     <!--/changelog-->
 
-강의자료·노트북(= README에 <!--date:파일--> 로 등록된 파일)이 바뀐 커밋만 기록한다.
+강의자료·실습 노트북이 바뀐 커밋만 기록한다. 대상은 둘 중 하나다.
+
+  1. README에 <!--date:파일--> 로 등록된 파일
+  2. 저장소 맨 위의 .html/.ipynb 중 이름이 '3차시'·'실습3'처럼 시작하는 파일
+     (README 표에 아직 링크되지 않은 자료도 잡히도록)
 """
 import re, subprocess, pathlib
 
@@ -16,6 +20,7 @@ README = ROOT / 'README.md'
 KEEP = 12                       # 목록에 남길 줄 수
 BLOCK = re.compile(r'(<!--changelog-->\n)(.*?)(<!--/changelog-->)', re.S)
 LABEL = re.compile(r'^(\d+차시|실습\s?\d+)')
+MATERIAL_SUFFIXES = {'.html', '.ipynb'}
 
 def git(*args):
     return subprocess.run(['git', *args], cwd=ROOT,
@@ -24,6 +29,16 @@ def git(*args):
 def head_files():
     out = git('show', '--name-only', '--format=', '-z', 'HEAD')
     return [f for f in out.split('\0') if f]
+
+def is_material(path, tracked):
+    """이 파일이 '최근 업데이트'에 적을 만한 수업 자료인가."""
+    if path in tracked:
+        return True
+    p = pathlib.PurePath(path)
+    return (len(p.parts) == 1                       # 하위 폴더(dl/, tools/ …)는 제외
+            and p.suffix in MATERIAL_SUFFIXES
+            and LABEL.match(p.name) is not None)
+
 
 def label_of(path):
     name = pathlib.PurePath(path).name
@@ -37,7 +52,7 @@ def main():
         return                                  # 블록이 없으면 아무것도 안 한다
 
     tracked = set(re.findall(r'<!--date:([^>]+?)-->', text))
-    changed = [f for f in head_files() if f in tracked]
+    changed = [f for f in head_files() if is_material(f, tracked)]
     if not changed:
         return                                  # 자료 변경이 없는 커밋은 기록하지 않는다
 
