@@ -15,3 +15,6 @@ exgrid.py
 .claude/
 .ipynb_checkpoints/
 __pycache__/
+
+# ── 배포 제외: 시험 문제·정답 ──
+시험/
