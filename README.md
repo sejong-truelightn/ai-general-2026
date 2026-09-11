@@ -8,13 +8,14 @@
 |---|---|---|---|
 | 1차시 | ML 개관과 강화학습 5원칙 | [열기](https://sejong-truelightn.github.io/ai-general-2026/1%EC%B0%A8%EC%8B%9C_ML%EA%B0%9C%EA%B4%80%EA%B3%BC_%EA%B0%95%ED%99%94%ED%95%99%EC%8A%B5_5%EC%9B%90%EC%B9%99.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/1.html)<br><sub><!--date:1차시_ML개관과_강화학습_5원칙.html-->2026-09-02 업데이트</sub> |
 | 2차시 | 밴딧 문제와 탐험·활용 | [열기](https://sejong-truelightn.github.io/ai-general-2026/2%EC%B0%A8%EC%8B%9C_%EB%B0%B4%EB%94%A7%EB%AC%B8%EC%A0%9C%EC%99%80_%ED%83%90%ED%97%98%ED%99%9C%EC%9A%A9.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/2.html)<br><sub><!--date:2차시_밴딧문제와_탐험활용.html-->2026-09-02 업데이트</sub> |
-| 4차시 | Q러닝과 벨만 방정식 | [열기](https://sejong-truelightn.github.io/ai-general-2026/4%EC%B0%A8%EC%8B%9C_Q%EB%9F%AC%EB%8B%9D%EA%B3%BC_%EB%B2%A8%EB%A7%8C%EB%B0%A9%EC%A0%95%EC%8B%9D.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/4.html)<br><sub><!--date:4차시_Q러닝과_벨만방정식.html-->2026-09-04 업데이트</sub> |
+| 4차시 | Q러닝과 벨만 방정식 | [열기](https://sejong-truelightn.github.io/ai-general-2026/4%EC%B0%A8%EC%8B%9C_Q%EB%9F%AC%EB%8B%9D%EA%B3%BC_%EB%B2%A8%EB%A7%8C%EB%B0%A9%EC%A0%95%EC%8B%9D.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/4.html)<br><sub><!--date:4차시_Q러닝과_벨만방정식.html-->2026-09-11 업데이트</sub> |
 
 전체 자료를 한 번에 받으려면 → [**ZIP으로 내려받기**](https://github.com/sejong-truelightn/ai-general-2026/archive/refs/heads/main.zip)
 
 ## 최근 업데이트
 
 <!--changelog-->
+- **2026-09-11** · 4차시 — 걸음 비용 슬라이드 추가, Q̂ 수렴 조건 표 제거
 <!--/changelog-->
 
 ## 실습 노트북
