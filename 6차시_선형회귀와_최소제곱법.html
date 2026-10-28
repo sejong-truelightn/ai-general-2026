@@ -374,7 +374,7 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
 <!-- 4-1 ─ 앤스컴 콰르텟 -->
 <section class="slide dense">
   <div class="top"><div class="kicker">산점도를 그려야 하는 이유</div><h2>앤스컴 콰르텟(Anscombe's quartet)</h2>
-    <p class="sub">데이터 네 개입니다. 표만 보고 어떻게 생겼을지 예상해 보세요.</p></div>
+    <p class="sub">통계학자 앤스컴(F. J. Anscombe)이 1973년에 만든 데이터 네 묶음입니다. 평균·분산·상관계수·회귀 직선이 거의 같도록 일부러 만들었습니다. 표만 보고 어떻게 생겼을지 예상해 보세요.</p></div>
   <div class="body">
     <div class="ansbox">
       <table class="tight anstab">
@@ -387,10 +387,9 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
       </table>
       <div class="ansplot step"><canvas id="cv-ans" width="1240" height="300"></canvas></div>
     </div>
-    <div class="grid2" style="grid-template-columns:1fr 1.25fr">
+    <div class="grid2" style="grid-template-columns:1fr 1fr">
       <div class="card acc pad-s">
-        <h3>요약된 통계표</h3>
-        <p class="note">네 데이터 모두 <span class="H">ŷ</span> = <span class="P">a</span><span class="X">x</span> + <span class="P">b</span>로 학습한 결과입니다.</p>
+        <h3>요약된 통계표 <span class="note" style="font-weight:400">(모두 <span class="H">ŷ</span> = <span class="P">a</span><span class="X">x</span> + <span class="P">b</span>로 학습)</span></h3>
         <table class="tight" style="margin-top:.4rem">
           <tr><th><span class="P">a</span></th><td>0.5</td><th><span class="P">b</span></th><td>3</td></tr>
           <tr><th>상관계수</th><td>0.82</td><th>R²</th><td>0.67</td></tr>
@@ -402,9 +401,9 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
         <h3>그림으로는 모두 다릅니다</h3>
         <ul class="clean">
           <li><b>1번</b> 직선 주위에 고르게 흩어져 있습니다.</li>
-          <li><b>2번</b> 점들이 <b>곡선</b>을 그립니다. 직선이 맞지 않습니다.</li>
+          <li><b>2번</b> 점들이 <b>곡선</b>을 그려 직선이 맞지 않습니다.</li>
           <li><b>3번</b> <b>한 점이 튀어서</b> 직선이 기울어졌습니다.</li>
-          <li><b>4번</b> 나머지는 x가 모두 8이라 직선이 <b>한 점으로</b> 정해집니다.</li>
+          <li><b>4번</b> x = 19인 <b>한 점</b>이 직선을 정합니다.</li>
         </ul>
       </div>
     </div>
@@ -680,10 +679,22 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
         <div><span class="P">b</span> = <span class="Y"><span class="ov">y</span></span> − <span class="P">a</span><span class="X"><span class="ov">x</span></span></div><span class="why">← 양변을 n으로 나눔 (Σy / n = 평균)</span>
         <div><b>a로 미분</b> &nbsp; −2 Σ <span class="X">xᵢ</span>( <span class="Y">yᵢ</span> − <span class="P">a</span><span class="X">xᵢ</span> − <span class="P">b</span> ) = 0</div><span class="why">← b는 상수로 보고 a에 대해 미분</span>
         <div>Σ <span class="X">xᵢ</span>( (<span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span>) − <span class="P">a</span>(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>) ) = 0</div><span class="why">← 위에서 구한 b를 대입</span>
-        <div>Σ (<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>)( (<span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span>) − <span class="P">a</span>(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>) ) = 0</div><span class="why">← Σ( (yᵢ − y̅) − a(xᵢ − x̅) ) = 0이라, xᵢ 대신 (xᵢ − x̅)를 곱해도 합이 같음</span>
+        <div>Σ <span class="X">xᵢ</span><span style="color:var(--d)">cᵢ</span> = 0</div><span class="why">← 긴 괄호 (yᵢ − <span class="ov">y</span>) − a(xᵢ − <span class="ov">x</span>)를 cᵢ라고 줄여 씀</span>
+        <div>Σ (<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>)<span style="color:var(--d)">cᵢ</span> = Σ <span class="X">xᵢ</span><span style="color:var(--d)">cᵢ</span> − <span class="X"><span class="ov">x</span></span>·Σ<span style="color:var(--d)">cᵢ</span> = Σ <span class="X">xᵢ</span><span style="color:var(--d)">cᵢ</span> = 0</div><span class="why">← 공식을 평균을 뺀 모양으로 맞추려고 xᵢ를 (xᵢ − <span class="ov">x</span>)로 바꿔 봄. <span class="ov">x</span>는 상수라 Σ 밖으로 나오고, Σcᵢ = 0이라 그 항이 사라져서 값이 같음</span>
+        <div>Σ (<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>)( (<span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span>) − <span class="P">a</span>(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>) ) = 0</div><span class="why">← cᵢ를 다시 풀어 씀. xᵢ 대신 (xᵢ − <span class="ov">x</span>)를 곱해도 같음</span>
         <div>Σ(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>)(<span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span>) − <span class="P">a</span>Σ(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>)² = 0</div><span class="why">← 괄호를 풀어 정리</span>
         <div><span class="P">a</span> = Σ(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>)(<span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span>) / Σ(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>)²</div><span class="why">← a에 대해 정리</span>
       </div>
+      <div class="hr"></div>
+      <h3>예시: Σ<span style="color:var(--d)">cᵢ</span> = Σ( (<span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span>) − <span class="P">a</span>(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>) ) = 0이 되는 이유</h3>
+      <p class="note">평균에서 뺀 값은 더하면 항상 0입니다. 데이터 <span class="X">x</span> = 1, 2, 3 (<span class="X"><span class="ov">x</span></span> = 2), <span class="Y">y</span> = 2, 4, 9 (<span class="Y"><span class="ov">y</span></span> = 5), <span class="P">a</span> = 2로 계산해 봅니다.</p>
+      <table class="tight anstab" style="margin-top:.4rem">
+        <tr><th></th><th>i = 1</th><th>i = 2</th><th>i = 3</th><th>합</th></tr>
+        <tr><th><span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span></th><td>−1</td><td>0</td><td>+1</td><td><b>0</b></td></tr>
+        <tr><th><span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span></th><td>−3</td><td>−1</td><td>+4</td><td><b>0</b></td></tr>
+        <tr class="sep"><th>(<span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span>) − <span class="P">a</span>(<span class="X">xᵢ</span> − <span class="X"><span class="ov">x</span></span>)</th><td>−3 + 2 = −1</td><td>−1 − 0 = −1</td><td>4 − 2 = 2</td><td><b>0</b></td></tr>
+      </table>
+      <p class="note" style="margin-top:.4rem">셋째 줄이 위 식의 <span style="color:var(--d)">cᵢ</span>입니다. 합이 0 − <span class="P">a</span> × 0이라 <span class="P">a</span>가 얼마든 0입니다.</p>
     </div>
   </div>
 </section>
@@ -1493,7 +1504,7 @@ function go(d){
   show(i + d, d < 0);
 }
 document.getElementById('deck').addEventListener('click', e => {
-  if (e.target.closest('input, textarea, button, a, select, canvas, label')) return;
+  if (e.target.closest('input, textarea, button, a, select, label, #cv-dino2')) return;   /* 점을 끄는 그림만 클릭에서 뺀다 */
   nextStep();
 });
 function fs(){ document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
