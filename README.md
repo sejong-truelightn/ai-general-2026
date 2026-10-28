@@ -9,7 +9,7 @@
 | 1차시 | ML 개관과 강화학습 5원칙 | [열기](https://sejong-truelightn.github.io/ai-general-2026/1%EC%B0%A8%EC%8B%9C_ML%EA%B0%9C%EA%B4%80%EA%B3%BC_%EA%B0%95%ED%99%94%ED%95%99%EC%8A%B5_5%EC%9B%90%EC%B9%99.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/1.html)<br><sub><!--date:1차시_ML개관과_강화학습_5원칙.html-->2026-09-02 업데이트</sub> |
 | 2차시 | 밴딧 문제와 탐험·활용 | [열기](https://sejong-truelightn.github.io/ai-general-2026/2%EC%B0%A8%EC%8B%9C_%EB%B0%B4%EB%94%A7%EB%AC%B8%EC%A0%9C%EC%99%80_%ED%83%90%ED%97%98%ED%99%9C%EC%9A%A9.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/2.html)<br><sub><!--date:2차시_밴딧문제와_탐험활용.html-->2026-09-18 업데이트</sub> |
 | 4차시 | Q러닝과 벨만 방정식 | [열기](https://sejong-truelightn.github.io/ai-general-2026/4%EC%B0%A8%EC%8B%9C_Q%EB%9F%AC%EB%8B%9D%EA%B3%BC_%EB%B2%A8%EB%A7%8C%EB%B0%A9%EC%A0%95%EC%8B%9D.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/4.html)<br><sub><!--date:4차시_Q러닝과_벨만방정식.html-->2026-09-11 업데이트</sub> |
-| 5차시 | 지도 학습의 4단계 | [열기](https://sejong-truelightn.github.io/ai-general-2026/5%EC%B0%A8%EC%8B%9C_%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5%EC%9D%98_4%EB%8B%A8%EA%B3%84.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/5.html)<br><sub><!--date:5차시_지도학습의_4단계.html-->2026-10-23 업데이트</sub> |
+| 5차시 | 지도 학습의 4단계 | [열기](https://sejong-truelightn.github.io/ai-general-2026/5%EC%B0%A8%EC%8B%9C_%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5%EC%9D%98_4%EB%8B%A8%EA%B3%84.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/5.html)<br><sub><!--date:5차시_지도학습의_4단계.html-->2026-10-28 업데이트</sub> |
 | 6차시 | 선형 회귀와 최소제곱법 | [열기](https://sejong-truelightn.github.io/ai-general-2026/6%EC%B0%A8%EC%8B%9C_%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80%EC%99%80_%EC%B5%9C%EC%86%8C%EC%A0%9C%EA%B3%B1%EB%B2%95.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/6.html)<br><sub><!--date:6차시_선형회귀와_최소제곱법.html-->2026-10-28 업데이트</sub> |
 
 전체 자료를 한 번에 받으려면 → [**ZIP으로 내려받기**](https://github.com/sejong-truelightn/ai-general-2026/archive/refs/heads/main.zip)
@@ -17,6 +17,7 @@
 ## 최근 업데이트
 
 <!--changelog-->
+- **2026-10-28** · 5차시 — 과적합·검증·교차검증·분류(K-NN) 슬라이드 제거
 - **2026-10-28** · 실습4 — 공개: 선형 회귀 학생용 노트북 + Advertising 데이터, README 표에 Colab 링크 추가
 - **2026-10-28** · 6차시 — 경사하강법 한 걸음 식과 손 계산 예제, TSS와 R² 보충 슬라이드 추가
 - **2026-10-28** · 6차시 — 선형 회귀와 최소제곱법 강의자료 추가
