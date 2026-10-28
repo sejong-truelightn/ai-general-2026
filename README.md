@@ -18,6 +18,7 @@
 ## 최근 업데이트
 
 <!--changelog-->
+- **2026-10-28** · 실습4 — 공개: 선형 회귀 학생용 노트북 + Advertising 데이터, README 표에 Colab 링크 추가
 - **2026-10-28** · 6차시 — 경사하강법 한 걸음 식과 손 계산 예제, TSS와 R² 보충 슬라이드 추가
 - **2026-10-28** · 6차시 — 선형 회귀와 최소제곱법 강의자료 추가
 - **2026-10-23** · 5차시 — 편향과 분산 슬라이드 추가, 소득 예제 그림을 연차 축에서 뛰게 수정
@@ -36,3 +37,4 @@
 |---|---|---|---|---|
 | 실습 2 | 톰슨 샘플링 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb) | [보기](https://sejong-truelightn.github.io/ai-general-2026/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81_%ED%92%80%EC%9D%B4%EA%B0%80%EC%9D%B4%EB%93%9C.html) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81.ipynb)<br><sub><!--date:실습2_톰슨샘플링.ipynb-->2026-09-02 업데이트</sub> |
 | 실습 3 | 그리드월드와 Q러닝 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B53_Q%EB%9F%AC%EB%8B%9D_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb) | — | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B53_Q%EB%9F%AC%EB%8B%9D.ipynb)<br><sub><!--date:실습3_Q러닝.ipynb-->2026-09-15 업데이트</sub> |
+| 실습 4 | 선형 회귀 직접 만들기 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B54_%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb) | — | _수업 후 공개_ |
