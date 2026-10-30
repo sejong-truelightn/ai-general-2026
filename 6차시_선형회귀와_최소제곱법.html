@@ -879,7 +879,7 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
         </div>
       </div>
     </div>
-    <div class="card acc-d pad-s">
+    <div class="card acc-d pad-s step">
       <h3 style="margin-bottom:.5rem">② 행렬로 쓴 RSS: n개를 한꺼번에 (그림은 n = 5)
         <span class="fml sm" style="display:inline-block;margin-left:1rem;padding:.2rem .9rem;vertical-align:middle">RSS = <span style="color:var(--d)">(<span class="Y">Y</span> − <span class="X">X</span><span class="P">β</span>)</span>ᵀ<span style="color:var(--d)">(<span class="Y">Y</span> − <span class="X">X</span><span class="P">β</span>)</span></span></h3>
       <div class="ops">
@@ -936,6 +936,33 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
         <p class="note step" style="margin-top:.5rem"><span class="X">x</span>, <span class="Y">y</span>에서 각각 평균을 빼 두면 (<span class="X">X</span>ᵀ<span class="X">X</span>)⁻¹은 분모 Σ(<span class="X">xᵢ</span>−<span class="X"><span class="ov">x</span></span>)²로 <b>나누는 것</b>,
           <span class="X">X</span>ᵀ<span class="Y">Y</span>는 분자 Σ(<span class="X">xᵢ</span>−<span class="X"><span class="ov">x</span></span>)(<span class="Y">yᵢ</span>−<span class="Y"><span class="ov">y</span></span>)에 해당합니다.
           모양은 다르지만 같은 계산입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13-4 ─ 정규방정식을 쓸 수 없는 경우 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 행렬로 풀기</div><h2>(<span class="X">X</span>ᵀ<span class="X">X</span>)⁻¹이 <span style="color:var(--warn)">없을 때</span></h2>
+    <p class="sub"><span class="P">β</span> = (<span class="X">X</span>ᵀ<span class="X">X</span>)⁻¹<span class="X">X</span>ᵀ<span class="Y">Y</span>는 <span class="X">X</span>ᵀ<span class="X">X</span>의 역행렬이 있을 때만 쓸 수 있습니다. 역행렬이 없어지는 경우는 세 가지입니다.</p></div>
+  <div class="body">
+    <div class="grid3">
+      <div class="card acc pad-s">
+        <h3>① <span class="X">x</span> 값이 전부 같을 때</h3>
+        <p class="note" style="margin-top:.5rem">모든 <span class="X">xᵢ</span>가 같으면 Σ(<span class="X">xᵢ</span>−<span class="X"><span class="ov">x</span></span>)² = 0이 됩니다.
+          그러면 <span class="P">a</span> = Σ(<span class="X">xᵢ</span>−<span class="X"><span class="ov">x</span></span>)(<span class="Y">yᵢ</span>−<span class="Y"><span class="ov">y</span></span>) / Σ(<span class="X">xᵢ</span>−<span class="X"><span class="ov">x</span></span>)²의 <b>분모가 0</b>이 되어 기울기를 정할 수 없습니다.</p>
+        <p class="note" style="margin-top:.5rem">행렬로 보면 <span class="X">X</span>의 두 열 [1, <span class="X">x</span>]가 서로 비례해서 <span class="X">X</span>ᵀ<span class="X">X</span>의 행렬식이 0이 됩니다.</p>
+      </div>
+      <div class="card acc-b pad-s">
+        <h3>② 한 변수가 다른 변수로 정확히 표현될 때</h3>
+        <p class="note" style="margin-top:.5rem">예를 들어 "TV 광고비"와 "TV 광고비(천원 단위)"를 둘 다 넣는 경우입니다.
+          열 하나가 다른 열의 배수가 되어 역행렬이 없습니다. 이것을 <b>완전 다중공선성</b>이라고 합니다.</p>
+        <p class="note" style="margin-top:.5rem">정확히 같지는 않아도 거의 비례하면 역행렬은 있지만 값이 크게 흔들립니다.</p>
+      </div>
+      <div class="card acc-d pad-s">
+        <h3>③ 데이터 개수가 찾을 숫자 개수(변수 수 + 1)보다 적을 때</h3>
+        <p class="note" style="margin-top:.5rem"><b>n &lt; p+1</b>이면 역행렬이 없습니다.</p>
+        <p class="note" style="margin-top:.5rem">점 1개로는 직선을 하나로 정할 수 없는 것과 같은 이유입니다.</p>
       </div>
     </div>
   </div>
