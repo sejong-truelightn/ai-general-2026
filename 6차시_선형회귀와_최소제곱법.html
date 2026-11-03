@@ -239,6 +239,7 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
 /* 데이터사우루스 버튼 */
 .dsel{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem;justify-content:center}
 .dsel .btn{font-size:1.2rem;padding:.25rem .65rem}
+.rmsel .btn.on{background:var(--a);border-color:var(--a);color:#fff}
 .dsel .btn.on{background:var(--a);border-color:var(--a);color:#fff}
 #dino-stat td{font-family:'JetBrains Mono',monospace}
 #dino-stat td.chg{color:var(--warn);font-weight:800}
@@ -961,8 +962,195 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
       </div>
       <div class="card acc-d pad-s">
         <h3>③ 데이터 개수가 찾을 숫자 개수(변수 수 + 1)보다 적을 때</h3>
-        <p class="note" style="margin-top:.5rem"><b>n &lt; p+1</b>이면 역행렬이 없습니다.</p>
+        <p class="note" style="margin-top:.5rem">데이터 개수 <b>n</b>이 변수 수 + 1보다 적으면 역행렬이 없습니다. +1은 절편 <span class="P">b</span>의 자리입니다.</p>
         <p class="note" style="margin-top:.5rem">점 1개로는 직선을 하나로 정할 수 없는 것과 같은 이유입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13-5a ─ XᵀX 일반식 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 행렬로 풀기 · 보충</div>
+    <h2><span class="X">X</span>ᵀ<span class="X">X</span>를 일반식으로 쓰면</h2>
+    <p class="sub">데이터가 3개이고 <span class="X">x</span>값이 <span class="X">x₁, x₂, x₃</span>일 때를 계산해 봅니다.</p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1.2rem">
+      <div class="card acc pad-s">
+        <h3>1. <span class="X">X</span>와 <span class="X">X</span>ᵀ</h3>
+        <div class="fml sm row" style="margin-top:.3rem;padding:.3rem">
+          <span class="X">X</span> = <span class="mat" style="grid-template-columns:repeat(2,auto)"><span>1</span><span><span class="X">x₁</span></span><span>1</span><span><span class="X">x₂</span></span><span>1</span><span><span class="X">x₃</span></span></span>
+          &nbsp;&nbsp;
+          <span class="X">X</span>ᵀ = <span class="mat" style="grid-template-columns:repeat(3,auto)"><span>1</span><span>1</span><span>1</span><span><span class="X">x₁</span></span><span><span class="X">x₂</span></span><span><span class="X">x₃</span></span></span>
+        </div>
+        <h3 style="margin-top:.6rem">2. <span class="X">X</span>ᵀ의 행과 <span class="X">X</span>의 열을 곱해서 더하기</h3>
+        <table class="tight" style="margin-top:.4rem">
+          <tr><th>칸</th><th>같은 위치끼리 곱해서 더하기</th><th>값</th></tr>
+          <tr><td>왼쪽 위</td><td>[1,1,1] · [1,1,1] = 1+1+1</td><td><b>n</b></td></tr>
+          <tr><td>오른쪽 위</td><td>[1,1,1] · [x₁,x₂,x₃] = x₁+x₂+x₃</td><td><b>Σx</b></td></tr>
+          <tr><td>왼쪽 아래</td><td>[x₁,x₂,x₃] · [1,1,1] = x₁+x₂+x₃</td><td><b>Σx</b></td></tr>
+          <tr><td>오른쪽 아래</td><td>[x₁,x₂,x₃] · [x₁,x₂,x₃] = x₁²+x₂²+x₃²</td><td><b>Σx²</b></td></tr>
+        </table>
+        <p class="note" style="margin-top:.3rem">n은 데이터 개수입니다.</p>
+      </div>
+      <div class="card acc-w pad-s">
+        <h3>3. 결과와 행렬식</h3>
+        <div class="fml sm row" style="margin-top:.4rem">
+          <span class="X">X</span>ᵀ<span class="X">X</span> = <span class="mat" style="grid-template-columns:repeat(2,auto)"><span>n</span><span>Σ<span class="X">x</span></span><span>Σ<span class="X">x</span></span><span>Σ<span class="X">x</span>²</span></span>
+        </div>
+        <p class="note" style="margin-top:.4rem">2×2 행렬 <span class="mat" style="grid-template-columns:repeat(2,auto);font-size:.9em"><span>a</span><span>b</span><span>c</span><span>d</span></span>는
+          <b>ad − bc</b>(행렬식)가 0이면 역행렬이 없습니다. 숫자를 0으로 나눌 수 없는 것과 같습니다.</p>
+        <div class="fml sm" style="margin-top:.5rem">ad − bc = n·Σ<span class="X">x</span>² − (Σ<span class="X">x</span>)²</div>
+        <p class="note step" style="margin-top:.5rem">이 값은 <b>n² × (<span class="X">x</span>의 분산)</b>과 같습니다.
+          분산은 값이 퍼진 정도라서 <b><span class="X">x</span>가 모두 같을 때만 0</b>입니다. 이것이 ①번 경우입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13-5 ─ x가 모두 같을 때 XᵀX 계산 예시 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 행렬로 풀기 · 예시</div>
+    <h2>① <span class="X">x</span>가 모두 3이면 <span class="X">X</span>ᵀ<span class="X">X</span>는?</h2>
+    <p class="sub">데이터 3개의 <span class="X">x</span>가 모두 3인 경우를 직접 계산해 봅니다.</p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1.2rem">
+      <div class="card acc pad-s">
+        <h3>1. <span class="X">X</span>와 <span class="X">X</span>ᵀ</h3>
+        <div class="fml sm row" style="margin-top:.3rem;padding:.3rem">
+          <span class="X">X</span> = <span class="mat" style="grid-template-columns:repeat(2,auto)"><span>1</span><span class="X">3</span><span>1</span><span class="X">3</span><span>1</span><span class="X">3</span></span>
+          &nbsp;&nbsp;
+          <span class="X">X</span>ᵀ = <span class="mat" style="grid-template-columns:repeat(3,auto)"><span>1</span><span>1</span><span>1</span><span class="X">3</span><span class="X">3</span><span class="X">3</span></span>
+        </div>
+        <h3 style="margin-top:.6rem">2. <span class="X">X</span>ᵀ의 행과 <span class="X">X</span>의 열을 곱해서 더하기</h3>
+        <table class="tight" style="margin-top:.4rem">
+          <tr><th>칸</th><th>같은 위치끼리 곱해서 더하기</th><th>값</th></tr>
+          <tr><td>왼쪽 위</td><td>[1,1,1] · [1,1,1] = 1+1+1</td><td><b>3</b></td></tr>
+          <tr><td>오른쪽 위</td><td>[1,1,1] · [3,3,3] = 3+3+3</td><td><b>9</b></td></tr>
+          <tr><td>왼쪽 아래</td><td>[3,3,3] · [1,1,1] = 3+3+3</td><td><b>9</b></td></tr>
+          <tr><td>오른쪽 아래</td><td>[3,3,3] · [3,3,3] = 9+9+9</td><td><b>27</b></td></tr>
+        </table>
+      </div>
+      <div class="card acc-w pad-s">
+        <h3>3. 결과와 행렬식</h3>
+        <div class="fml sm row" style="margin-top:.4rem">
+          <span class="X">X</span>ᵀ<span class="X">X</span> = <span class="mat" style="grid-template-columns:repeat(2,auto)"><span>3</span><span>9</span><span>9</span><span>27</span></span>
+        </div>
+        <p class="note" style="margin-top:.4rem">행렬식 ad − bc에 넣으면 다음과 같습니다.</p>
+        <div class="fml sm" style="margin-top:.5rem">3×27 − 9×9 = 81 − 81 = <span style="color:var(--warn)">0</span></div>
+        <p class="note step" style="margin-top:.5rem">둘째 행 [9, 27]이 첫째 행 [3, 9]의 정확히 <b>3배</b>입니다. <span class="X">X</span>에서 <span class="X">x</span> 열이 1 열의 3배였던 관계가 그대로 남아서 행렬식이 0이 됩니다.</p>
+        <p class="note step" style="margin-top:.4rem">모델은 늘 <b><span class="H">ŷ</span> = <span class="P">b</span> + 3<span class="P">a</span></b>가 됩니다. <span class="P">b</span> + 3<span class="P">a</span>만 같으면 어떤 (<span class="P">b</span>, <span class="P">a</span>)든 예측이 같아서 하나로 정할 수 없습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13-6 ─ ② 완전 다중공선성 예시 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 행렬로 풀기 · 예시</div>
+    <h2>② 한 변수가 다른 변수의 배수일 때</h2>
+    <p class="sub"><span class="X">x₁</span> = TV 광고비(만원), <span class="X">x₂</span> = 같은 광고비를 천원 단위로 적은 값. 그래서 항상 <span class="X">x₂</span> = 10 × <span class="X">x₁</span>입니다.</p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1.2rem">
+      <div class="card acc-b pad-s">
+        <h3>모델로 보면</h3>
+        <div class="fml sm" style="margin-top:.3rem"><span class="H">ŷ</span> = <span class="P">b</span> + <span class="P">a₁</span><span class="X">x₁</span> + <span class="P">a₂</span><span class="X">x₂</span>
+          <br>= <span class="P">b</span> + (<span class="P">a₁</span> + 10<span class="P">a₂</span>) <span class="X">x₁</span></div>
+        <p class="note" style="margin-top:.4rem"><span class="X">x₂</span> 자리에 10<span class="X">x₁</span>을 넣으면 식에 남는 것은 <b><span class="P">a₁</span> + 10<span class="P">a₂</span></b> 하나입니다.
+          이 합만 같으면 예측이 똑같습니다.</p>
+        <table class="tight" style="margin-top:.5rem">
+          <tr><th><span class="P">a₁</span></th><th><span class="P">a₂</span></th><th><span class="P">a₁</span> + 10<span class="P">a₂</span></th><th><span class="X">x₁</span> = 3일 때 예측 (<span class="P">b</span> = 0)</th></tr>
+          <tr><td>5</td><td>0</td><td>5</td><td>15</td></tr>
+          <tr><td>0</td><td>0.5</td><td>5</td><td>15</td></tr>
+          <tr><td>3</td><td>0.2</td><td>5</td><td>15</td></tr>
+        </table>
+        <p class="note" style="margin-top:.3rem">어느 쪽이 정답인지 데이터로는 가릴 수 없습니다.</p>
+      </div>
+      <div class="card acc-w pad-s">
+        <h3>행렬로 보면</h3>
+        <p class="note" style="margin-top:.3rem">데이터 3개: <span class="X">x₁</span> = 1, 2, 3 / <span class="X">x₂</span> = 10, 20, 30</p>
+        <div class="fml sm row" style="margin-top:.3rem;padding:.3rem">
+          <span class="X">X</span> = <span class="mat" style="grid-template-columns:repeat(3,auto)"><span>1</span><span><span class="X">1</span></span><span><span class="X">10</span></span><span>1</span><span><span class="X">2</span></span><span><span class="X">20</span></span><span>1</span><span><span class="X">3</span></span><span><span class="X">30</span></span></span>
+          &nbsp;
+          <span class="X">X</span>ᵀ<span class="X">X</span> = <span class="mat" style="grid-template-columns:repeat(3,auto)"><span>3</span><span>6</span><span>60</span><span>6</span><span>14</span><span>140</span><span>60</span><span>140</span><span>1400</span></span>
+        </div>
+        <p class="note" style="margin-top:.4rem">셋째 열이 둘째 열의 10배이고, <span class="X">X</span>ᵀ<span class="X">X</span>에서도 <b>셋째 행 [60, 140, 1400]이 둘째 행 [6, 14, 140]의 10배</b>입니다.
+          3×3 행렬도 한 행이 다른 행의 배수이면 행렬식이 0이라서 역행렬이 없습니다.</p>
+        <p class="note step" style="margin-top:.4rem"><b>정확히 배수는 아니고 거의 비례할 때</b>(예: TV 광고비와 온라인 광고비가 늘 비슷하게 움직일 때)는 행렬식이 0에 아주 가깝습니다.
+          역행렬은 구해지지만 데이터가 조금만 바뀌어도 <span class="P">a₁</span>, <span class="P">a₂</span>가 크게 달라집니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13-6a ─ ② 3×3 행렬식 계산 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 행렬로 풀기 · 예시</div>
+    <h2>② 3×3 행렬식은 왜 0일까</h2>
+    <p class="sub">앞 장의 <span class="X">X</span>ᵀ<span class="X">X</span>로 3×3 행렬식을 직접 계산해 봅니다.</p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1.2rem;grid-template-columns:1fr 1.35fr">
+      <div class="card acc-b pad-s">
+        <h3>3×3 행렬식 계산법</h3>
+        <p class="note" style="margin-top:.3rem">첫째 행의 숫자 하나마다, 그 숫자가 있는 <b>행과 열을 지우고</b> 남은 2×2의 ad − bc를 곱합니다. 이것을 +, −, + 순서로 더합니다.</p>
+        <div class="fml sm row" style="margin-top:.4rem;padding:.3rem">
+          <span class="mat" style="grid-template-columns:repeat(3,auto)"><span><b style="color:var(--warn)">3</b></span><span><b style="color:var(--warn)">6</b></span><span><b style="color:var(--warn)">60</b></span><span>6</span><span>14</span><span>140</span><span>60</span><span>140</span><span>1400</span></span>
+        </div>
+        <p class="note" style="margin-top:.3rem">셋째 행 = 둘째 행 × 10</p>
+        <div class="fml sm" style="margin-top:.4rem;font-size:1.6rem">행렬식 = <b style="color:var(--warn)">3</b>·A − <b style="color:var(--warn)">6</b>·B + <b style="color:var(--warn)">60</b>·C</div>
+      </div>
+      <div class="card acc-w pad-s">
+        <h3>남은 2×2의 ad − bc</h3>
+        <table class="tight" style="margin-top:.4rem">
+          <tr><th></th><th>지우는 열</th><th>남은 2×2</th><th>ad − bc</th></tr>
+          <tr><td><b>A</b></td><td>1열</td><td><span class="mat" style="grid-template-columns:repeat(2,auto);font-size:.85em"><span>14</span><span>140</span><span>140</span><span>1400</span></span></td><td>14×1400 − 140×140<br>= 19600 − 19600 = <b>0</b></td></tr>
+          <tr><td><b>B</b></td><td>2열</td><td><span class="mat" style="grid-template-columns:repeat(2,auto);font-size:.85em"><span>6</span><span>140</span><span>60</span><span>1400</span></span></td><td>6×1400 − 140×60<br>= 8400 − 8400 = <b>0</b></td></tr>
+          <tr><td><b>C</b></td><td>3열</td><td><span class="mat" style="grid-template-columns:repeat(2,auto);font-size:.85em"><span>6</span><span>14</span><span>60</span><span>140</span></span></td><td>6×140 − 14×60<br>= 840 − 840 = <b>0</b></td></tr>
+        </table>
+        <div class="fml sm" style="margin-top:.5rem">행렬식 = 3×0 − 6×0 + 60×0 = <span style="color:var(--warn)">0</span></div>
+        <p class="note step" style="margin-top:.4rem">첫째 행을 지우면 남은 2×2는 <b>둘째 행과 셋째 행에서만</b> 숫자를 가져옵니다.
+          그래서 모두 아랫줄이 윗줄의 10배이고, 2×2 규칙대로 ad − bc = 0입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13-7 ─ ③ 데이터가 부족할 때 예시 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 행렬로 풀기 · 예시</div>
+    <h2>③ 데이터가 찾을 숫자보다 적을 때</h2>
+    <p class="sub"><span class="H">ŷ</span> = <span class="P">b</span> + <span class="P">a</span><span class="X">x</span>는 <span class="P">b</span>, <span class="P">a</span> 두 숫자를 찾아야 합니다. 그런데 데이터가 (2, 4) <b>하나뿐</b>이라면?</p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1.2rem">
+      <div class="card acc-d pad-s">
+        <h3>그림으로 보면</h3>
+        <svg viewBox="0 0 400 230" style="width:100%;height:auto;max-height:30vh;display:block" font-family="Noto Sans KR, sans-serif">
+          <path d="M40,10 L40,200 L390,200" fill="none" stroke="var(--line)" stroke-width="1.6"/>
+          <text x="388" y="222" text-anchor="end" font-size="14" fill="var(--dim)">x</text>
+          <text x="20" y="18" font-size="14" fill="var(--dim)">y</text>
+          <line x1="40" y1="200" x2="320" y2="4" stroke="var(--a)" stroke-width="2.4"/>
+          <line x1="40" y1="102" x2="390" y2="102" stroke="var(--c)" stroke-width="2.4"/>
+          <line x1="40" y1="151" x2="390" y2="28.5" stroke="var(--b)" stroke-width="2.4"/>
+          <circle cx="180" cy="102" r="7" fill="var(--warn)" stroke="#fff" stroke-width="2"/>
+          <text x="190" y="128" font-size="15" font-weight="700" fill="var(--warn)">(2, 4)</text>
+          <text x="328" y="16" font-size="13" font-weight="700" fill="var(--a)">a = 2, b = 0</text>
+          <text x="388" y="94" text-anchor="end" font-size="13" font-weight="700" fill="var(--c)">a = 0, b = 4</text>
+          <text x="388" y="66" text-anchor="end" font-size="13" font-weight="700" fill="var(--b)">a = 1, b = 2</text>
+        </svg>
+        <p class="note" style="margin-top:.3rem">점 하나를 지나는 직선은 무수히 많습니다. 세 직선 모두 오차가 0이라서 어느 것이 답인지 정할 수 없습니다.</p>
+      </div>
+      <div class="card acc-w pad-s">
+        <h3>행렬로 보면</h3>
+        <div class="fml sm row" style="margin-top:.3rem;padding:.3rem">
+          <span class="X">X</span> = <span class="mat" style="grid-template-columns:repeat(2,auto)"><span>1</span><span><span class="X">2</span></span></span>
+          &nbsp;
+          <span class="X">X</span>ᵀ<span class="X">X</span> = <span class="mat" style="grid-template-columns:repeat(2,auto)"><span>1</span><span>2</span><span>2</span><span>4</span></span>
+        </div>
+        <div class="fml sm" style="margin-top:.4rem">1×4 − 2×2 = <span style="color:var(--warn)">0</span></div>
+        <p class="note" style="margin-top:.4rem">일반식 n·Σ<span class="X">x</span>² − (Σ<span class="X">x</span>)²에 n = 1을 넣으면 <span class="X">x</span>² − <span class="X">x</span>² = 0입니다.
+          값이 하나뿐이면 분산이 항상 0이기 때문입니다.</p>
+        <p class="note step" style="margin-top:.4rem"><b>찾을 숫자가 k개면 데이터도 최소 k개</b>가 있어야 합니다.
+          직선(<span class="P">b</span>, <span class="P">a</span>)은 점 2개, 변수 2개짜리 평면(<span class="P">b</span>, <span class="P">a₁</span>, <span class="P">a₂</span>)은 점 3개가 필요합니다.</p>
       </div>
     </div>
   </div>
@@ -990,6 +1178,44 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
       <div class="fml sm" style="margin:.5rem 0">새 <span class="P">a</span> = 지금 <span class="P">a</span> − η × (지금 위치의 기울기)</div>
       <p class="note">기울기가 음수면 <span class="P">a</span>를 키우고, 양수면 줄입니다. <b>η(에타, 학습률)</b>는 한 걸음의 크기입니다.
         절편 <span class="P">b</span>도 같은 규칙으로 <b>함께</b> 움직입니다: 새 <span class="P">b</span> = 지금 <span class="P">b</span> − η × (b 방향 기울기).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10-2 ─ 경사하강법 데모 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 실습</div><h2>경사하강법으로 a 찾기</h2>
+    <p class="sub">식을 간단히 하려고 절편 <span class="P">b</span>는 0으로 두고, <b class="H">ŷ = <span class="P">a</span>x</b>의 기울기 <span class="P">a</span> 하나만 찾습니다.</p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1.2rem">
+      <div class="demo">
+        <canvas id="cv-gd1" width="820" height="360" style="max-height:27vh"></canvas>
+        <p class="note" style="margin-top:.3rem;text-align:center">데이터와 현재 직선</p>
+        <div class="statrow" style="margin-top:.6rem;justify-content:center">
+          <div class="stat"><span class="k">현재 a</span><span class="v" id="gd-a" style="color:var(--warn)">—</span></div>
+          <div class="stat"><span class="k">기울기</span><span class="v" id="gd-g">—</span></div>
+          <div class="stat"><span class="k">MSE</span><span class="v" id="gd-m" style="color:var(--d)">—</span></div>
+          <div class="stat"><span class="k">걸음</span><span class="v" id="gd-t">0</span></div>
+        </div>
+      </div>
+      <div class="demo">
+        <canvas id="cv-gd2" width="820" height="360" style="max-height:27vh"></canvas>
+        <p class="note" style="margin-top:.3rem;text-align:center">MSE(<span class="P">a</span>) 곡선 위에서의 발자국</p>
+        <div class="fml sm" style="margin-top:.2rem;padding:.4rem;line-height:1.5;font-size:1.35rem">MSE(<span class="P">a</span>) = (1/n) Σ ( <span class="Y">yᵢ</span> − <span class="P">a</span><span class="X">xᵢ</span> )²<br>= (Σ<span class="X">xᵢ</span>²/n) <span class="P">a</span>² − (2Σ<span class="X">xᵢ</span><span class="Y">yᵢ</span>/n) <span class="P">a</span> + Σ<span class="Y">yᵢ</span>²/n<small><span class="P">a</span>에 대한 <b>이차함수</b>라서 곡선이 그릇 모양입니다.</small></div>
+        <p class="note" style="margin-top:.4rem;text-align:center" id="gd-dir"></p>
+      </div>
+    </div>
+    <div class="demo">
+      <div class="ctl">
+        <label>학습률 η
+          <input type="range" id="gd-lr" min="0.01" max="0.42" step="0.01" value="0.08">
+          <span class="val" id="gd-lrv">0.08</span></label>
+        <button class="btn" id="gd-step">한 걸음 ›</button>
+        <button class="btn" id="gd-run">자동 ▶</button>
+        <button class="btn ghost" id="gd-reset">왼쪽에서 시작</button>
+        <button class="btn ghost" id="gd-reset2">오른쪽에서 시작</button>
+      </div>
+      <p class="note" style="margin-top:.5rem" id="gd-msg">η를 <b>0.35 이상</b>으로 올리고 자동을 눌러 어떻게 되는지 확인해 보세요.</p>
     </div>
   </div>
 </section>
@@ -1030,56 +1256,140 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
     <p class="sub">데이터 (<span class="X">1</span>, <span class="Y">2</span>), (<span class="X">2</span>, <span class="Y">4</span>)에 <b class="H">ŷ = <span class="P">a</span>x</b>를 맞춥니다. 시작 <span class="P">a</span> = 0, η = 0.1이고 정답은 <span class="P">a</span> = 2입니다.</p></div>
   <div class="body">
     <div class="card acc pad-s">
-      <div class="fml sm" style="margin:0 0 .5rem;padding:.4rem;font-size:1.6rem">
+      <div class="fml sm" style="margin:0 0 .5rem;padding:.4rem;font-size:1.6rem;line-height:1.45">
+        dMSE/d<span class="P">a</span> = −(2/n) Σ <span class="X">xᵢ</span>(<span class="Y">yᵢ</span> − <span class="P">a</span><span class="X">xᵢ</span>) <span style="font-family:'Noto Sans KR',sans-serif;font-size:.7em;font-weight:500;color:var(--dim)">← n = 2와 데이터를 넣으면</span>
+<br>
         dMSE/d<span class="P">a</span> = −(2/2) [ 1·(2 − <span class="P">a</span>) + 2·(4 − 2<span class="P">a</span>) ] = −5(2 − <span class="P">a</span>)</div>
       <table class="tight anstab">
-        <tr><th>걸음</th><th>지금 <span class="P">a</span></th><th>기울기 −5(2 − <span class="P">a</span>)</th><th>이동량 −η × 기울기</th><th>새 <span class="P">a</span></th></tr>
+        <tr><th>걸음</th><th>지금 <span class="P">a</span></th><th>기울기: −5(2 − <span class="P">a</span>)</th><th>이동량: −학습률 × 기울기</th><th>새 <span class="P">a</span></th></tr>
         <tr><th>1</th><td>0</td><td>−10</td><td>+1</td><td>1</td></tr>
         <tr><th>2</th><td>1</td><td>−5</td><td>+0.5</td><td>1.5</td></tr>
         <tr><th>3</th><td>1.5</td><td>−2.5</td><td>+0.25</td><td>1.75</td></tr>
-        <tr><th>⋮</th><td></td><td>→ 0</td><td>→ 0</td><td>→ 2</td></tr>
+        <tr><th>4</th><td>1.75</td><td>−1.25</td><td>+0.125</td><td>1.875</td></tr>
+        <tr><th>⋮</th><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td></tr>
+        <tr><th>10</th><td>1.996</td><td>−0.02</td><td>+0.002</td><td><b>1.998</b></td></tr>
       </table>
-      <p class="note" style="margin-top:.4rem">기울기가 음수라서 <span class="P">a</span>가 커지고, 바닥에 가까워질수록 기울기와 이동량이 함께 줄어듭니다.</p>
-    </div>
-    <div class="tip step pad-s">
-      <h3>파라미터가 두 개면</h3>
-      <p class="note"><b class="H">ŷ = <span class="P">a</span>x + <span class="P">b</span></b>에서는 dMSE/d<span class="P">b</span> = −(2/n) Σ (<span class="Y">yᵢ</span> − <span class="P">a</span><span class="X">xᵢ</span> − <span class="P">b</span>)도 구해서,
-        두 기울기를 <b>지금 위치에서 계산한 뒤</b> <span class="P">a</span>와 <span class="P">b</span>를 동시에 옮깁니다. 이 기울기들을 묶은 것이 <b>그래디언트(gradient)</b>입니다.</p>
+      <p class="note" style="margin-top:.4rem">기울기가 음수라서 <span class="P">a</span>가 커지고, 바닥에 가까울수록 이동량이 줄어 약 1.998에서 멈춥니다. 정답 <span class="P">a</span> = 2와 거의 같습니다.</p>
     </div>
   </div>
 </section>
 
-<!-- 10-2 ─ 경사하강법 데모 -->
+<!-- 10-1a2 ─ a와 b의 기울기 유도 -->
 <section class="slide dense">
-  <div class="top"><div class="kicker">STEP 3 실습</div><h2>경사하강법으로 a 찾기</h2>
-    <p class="sub">식을 간단히 하려고 절편 <span class="P">b</span>는 0으로 두고, <b class="H">ŷ = <span class="P">a</span>x</b>의 기울기 <span class="P">a</span> 하나만 찾습니다.</p></div>
+  <div class="top"><div class="kicker">STEP 3 보충</div><h2><span class="P">a</span>와 <span class="P">b</span>의 기울기는 어떻게 나오나</h2>
+    <p class="sub">절편 <span class="P">b</span>도 함께 움직이면 기울기가 두 개 필요합니다. 점 하나에서 먼저 구하고, 나중에 평균을 냅니다.</p></div>
   <div class="body">
-    <div class="grid2" style="gap:1.2rem">
-      <div class="demo">
-        <canvas id="cv-gd1" width="820" height="360" style="max-height:27vh"></canvas>
-        <p class="note" style="margin-top:.3rem;text-align:center">데이터와 현재 직선</p>
+    <div class="grid2" style="align-items:stretch">
+      <div class="card acc pad-s">
+        <h3>1단계: 점 하나만 놓고 생각하기</h3>
+        <div class="fml sm" style="margin:.3rem 0;padding:.3rem;font-size:1.5rem">
+          e = <span class="Y">y</span> − (<span class="P">a</span><span class="X">x</span> + <span class="P">b</span>), &nbsp; 손실 = e²</div>
+        <p class="note">손실 e²는 <span class="P">a</span>에 바로 연결되어 있지 않습니다. 중간에 e가 끼어 있습니다.</p>
+        <p class="note" style="margin:.3rem 0;padding-left:.8rem;border-left:.2rem solid var(--dim)"><b><span class="P">a</span>가 바뀜 → 오차 e가 바뀜 → 손실 e²가 바뀜</b></p>
+        <p class="note">그래서 두 개를 따로 구한 뒤 곱합니다.</p>
+        <p class="note" style="margin-top:.3rem;line-height:1.7">
+          ① <span class="P">a</span>가 1 바뀔 때 e는 얼마나 바뀌나? → <b>−<span class="X">x</span>배</b><br>
+          ② e가 1 바뀔 때 e²는 얼마나 바뀌나? → <b>2e배</b><br>
+          ③ 둘을 곱하면 <span class="P">a</span>가 1 바뀔 때 e²가 바뀌는 양<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;→ <b>2e × (−<span class="X">x</span>) = −2<span class="X">x</span>e</b></p>
       </div>
-      <div class="demo">
-        <canvas id="cv-gd2" width="820" height="360" style="max-height:27vh"></canvas>
-        <p class="note" style="margin-top:.3rem;text-align:center">MSE(<span class="P">a</span>) 곡선 위에서의 발자국</p>
-        <div class="fml sm" style="margin-top:.2rem;padding:.4rem;line-height:1.5;font-size:1.35rem">MSE(<span class="P">a</span>) = (1/n) Σ ( <span class="Y">yᵢ</span> − <span class="P">a</span><span class="X">xᵢ</span> )²<br>= (Σ<span class="X">xᵢ</span>²/n) <span class="P">a</span>² − (2Σ<span class="X">xᵢ</span><span class="Y">yᵢ</span>/n) <span class="P">a</span> + Σ<span class="Y">yᵢ</span>²/n<small><span class="P">a</span>에 대한 <b>이차함수</b>라서 곡선이 그릇 모양입니다.</small></div>
-      </div>
-    </div>
-    <div class="demo">
-      <div class="ctl">
-        <label>학습률 η
-          <input type="range" id="gd-lr" min="0.01" max="0.42" step="0.01" value="0.08">
-          <span class="val" id="gd-lrv">0.08</span></label>
-        <button class="btn" id="gd-step">한 걸음 ›</button>
-        <button class="btn" id="gd-run">자동 ▶</button>
-        <button class="btn ghost" id="gd-reset">처음으로</button>
-        <div class="statrow" style="margin-left:auto">
-          <div class="stat"><span class="k">현재 a</span><span class="v" id="gd-a" style="color:var(--warn)">—</span></div>
-          <div class="stat"><span class="k">MSE</span><span class="v" id="gd-m" style="color:var(--d)">—</span></div>
-          <div class="stat"><span class="k">걸음</span><span class="v" id="gd-t">0</span></div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="card acc-d pad-s">
+          <h3><span class="P">a</span>와 <span class="P">b</span>를 함께 정리</h3>
+          <table class="tight anstab" style="margin-top:.3rem">
+            <tr><th></th><th>① <span class="P">a</span>(<span class="P">b</span>)가 1 늘 때 e의 변화</th><th>② e가 1 늘 때 e²의 변화</th><th>①×②</th></tr>
+            <tr><th><span class="P">a</span></th><td>−<span class="X">x</span></td><td>2e</td><td><b>−2<span class="X">x</span>e</b></td></tr>
+            <tr><th><span class="P">b</span></th><td>−1</td><td>2e</td><td><b>−2e</b></td></tr>
+          </table>
+          <p class="note" style="margin-top:.3rem"><span class="P">a</span>가 1 늘면 e는 <span class="X">x</span>만큼, <span class="P">b</span>가 1 늘면 e는 1만큼 줄어듭니다.</p>
+        </div>
+        <div class="card acc-c pad-s">
+          <h3>2단계: 모든 점에 대해 평균 내기</h3>
+          <p class="note" style="margin-top:.2rem">MSE는 e²의 평균이므로 기울기도 평균을 냅니다.</p>
+          <div class="fml sm" style="margin:.3rem 0 0;padding:.3rem;font-size:1.35rem;line-height:1.6">
+            ∂MSE/∂<span class="P">a</span> = (1/n) Σ (−2<span class="X">xᵢ</span>eᵢ) = −2 · mean(<span class="X">x</span> · e)<br>
+            ∂MSE/∂<span class="P">b</span> = (1/n) Σ (−2eᵢ) = −2 · mean(e)</div>
+          <p class="note" style="margin-top:.3rem">이 두 기울기로 <span class="P">a</span>와 <span class="P">b</span>를 함께 한 걸음 옮깁니다.</p>
+          <div class="fml sm" style="margin:.3rem 0 0;padding:.3rem;font-size:1.35rem">
+            <span class="P">a</span> = <span class="P">a</span> − <span style="color:var(--b)">η</span>·∂MSE/∂<span class="P">a</span>, &nbsp;
+            <span class="P">b</span> = <span class="P">b</span> − <span style="color:var(--b)">η</span>·∂MSE/∂<span class="P">b</span></div>
         </div>
       </div>
-      <p class="note" style="margin-top:.5rem" id="gd-msg">η를 <b>0.35 이상</b>으로 올리고 자동을 눌러 어떻게 되는지 확인해 보세요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10-1c ─ RSS 대신 MSE를 쓰는 이유 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 보충</div><h2>경사하강법에서 RSS 대신 <span style="color:var(--d)">MSE</span>를 쓰는 이유</h2>
+    <p class="sub">MSE = RSS / n이라 최저점은 둘 다 <span class="P">a</span> = 2입니다. 다른 것은 <b>기울기의 크기</b>이고, 기울기가 클수록 한 걸음도 커집니다.</p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1rem">
+      <div class="demo" style="padding:.6rem .8rem">
+        <canvas id="cv-rm1" width="820" height="340" style="max-height:24vh"></canvas>
+        <p class="note" style="margin-top:.2rem;text-align:center">오차 곡선과 <span class="P">a</span> = 0에서의 기울기(점선)</p>
+      </div>
+      <div class="demo" style="padding:.6rem .8rem">
+        <canvas id="cv-rm2" width="820" height="340" style="max-height:24vh"></canvas>
+        <p class="note" style="margin-top:.2rem;text-align:center">η = 0.1로 세 걸음 갔을 때 <span class="P">a</span>의 위치</p>
+      </div>
+    </div>
+    <div class="demo" style="padding:.6rem 1.2rem">
+      <div class="ctl rmsel">
+        <span style="font-size:1.5rem;color:var(--dim);font-weight:700">(1, 2), (2, 4)를 반복해서 데이터 개수 n을</span>
+        <button class="btn on" data-n="2">2개</button>
+        <button class="btn" data-n="20">20개</button>
+        <button class="btn" data-n="200">200개</button>
+        <div class="statrow" style="margin-left:auto">
+          <div class="stat"><span class="k">RSS 기울기 (a = 0)</span><span class="v" id="rm-gr" style="color:var(--b)">—</span></div>
+          <div class="stat"><span class="k">MSE 기울기 (a = 0)</span><span class="v" id="rm-gm" style="color:var(--d)">—</span></div>
+        </div>
+      </div>
+      <p class="note" style="margin-top:.3rem" id="rm-msg"></p>
+    </div>
+    <div class="grid2" style="grid-template-columns:1fr 1fr;align-items:center">
+      <div class="card acc-d pad-s">
+        <div class="fml sm" style="text-align:left;line-height:1.7;font-size:1.45rem;padding:.3rem .6rem">
+          <span style="color:var(--b)">RSS</span>(<span class="P">a</span>) = 2.5<b>n</b>(2 − <span class="P">a</span>)² → 기울기 −5<b>n</b>(2 − <span class="P">a</span>)<br>
+          <span style="color:var(--d)">MSE</span>(<span class="P">a</span>) = 2.5(2 − <span class="P">a</span>)² → 기울기 −5(2 − <span class="P">a</span>)</div>
+      </div>
+      <div class="tip pad-s">
+        <ul class="clean">
+          <li class="note">RSS를 쓰면 n이 바뀔 때마다 η를 다시 골라야 합니다.</li>
+          <li class="note">MSE를 쓰면 n과 상관없이 같은 η를 쓸 수 있습니다.</li>
+          <li class="note">공식으로 풀 때는 RSS를 써도 답이 같습니다.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10-1c2 ─ RSS(a), MSE(a) 식이 나온 과정 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">STEP 3 보충</div><h2><span style="color:var(--b)">RSS</span>(<span class="P">a</span>) = 2.5<b>n</b>(2 − <span class="P">a</span>)²는 어디서 나왔나</h2>
+    <p class="sub">앞 장은 (1, 2), (2, 4)를 반복 복사해 데이터를 2개, 20개, 200개로 늘립니다. 그 개수가 <b>n</b>입니다.</p></div>
+  <div class="body">
+    <div class="grid2" style="gap:1.2rem">
+      <div class="card acc pad-s">
+        <h3>1. 점 하나당 오차부터</h3>
+        <p class="note" style="margin-top:.3rem"><b class="H">ŷ = <span class="P">a</span>x</b>일 때 각 점의 오차 제곱은 다음과 같습니다.</p>
+        <div class="fml sm" style="text-align:left;line-height:1.7;font-size:1.3rem;margin-top:.4rem;padding:.4rem .8rem">
+          점 (1, 2): (2 − 1·<span class="P">a</span>)² = (2 − <span class="P">a</span>)²<br>
+          점 (2, 4): (4 − 2<span class="P">a</span>)²<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= (2·(2 − <span class="P">a</span>))² = 4(2 − <span class="P">a</span>)²</div>
+        <p class="note" style="margin-top:.5rem">두 점을 합하면 (2 − <span class="P">a</span>)² + 4(2 − <span class="P">a</span>)² = <b>5(2 − <span class="P">a</span>)²</b>입니다.
+          점 2개에 5이므로 <b>점 하나당 평균 2.5(2 − <span class="P">a</span>)²</b>입니다.</p>
+      </div>
+      <div class="card acc-b pad-s">
+        <h3>2. <span style="color:var(--b)">RSS</span>: 전부 더하기</h3>
+        <p class="note" style="margin-top:.3rem">RSS는 모든 점의 오차를 <b>더한 값</b>이라서 점이 많을수록 커집니다.</p>
+        <table class="tight" style="margin-top:.4rem">
+          <tr><th>n</th><th>두 점 묶음 수</th><th>RSS</th></tr>
+          <tr><td>2</td><td>1묶음</td><td>5(2 − <span class="P">a</span>)²</td></tr>
+          <tr><td>20</td><td>10묶음</td><td>50(2 − <span class="P">a</span>)²</td></tr>
+          <tr><td>200</td><td>100묶음</td><td>500(2 − <span class="P">a</span>)²</td></tr>
+        </table>
+        <div class="fml sm" style="margin-top:.5rem;font-size:1.3rem">RSS(<span class="P">a</span>) = (n/2) × 5(2 − <span class="P">a</span>)² = 2.5<b>n</b>(2 − <span class="P">a</span>)²</div>
+      </div>
     </div>
   </div>
 </section>
@@ -1170,6 +1480,11 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
         <h3 style="margin-top:.5rem">설명한 비율</h3>
         <div class="fml sm" style="margin:.4rem 0">R² = 1 − RSS / TSS
           <small>TSS = 직선을 안 쓰고 <b>y의 평균</b>으로만 찍었을 때의 오차 제곱합</small></div>
+        <table class="tight" style="margin:.2rem 0 .5rem">
+          <tr><th></th><th>예측값</th><th>식</th></tr>
+          <tr><th>TSS</th><td>모든 점을 평균 <span class="Y"><span class="ov">y</span></span>로 예측</td><td>Σ(<span class="Y">yᵢ</span> − <span class="Y"><span class="ov">y</span></span>)²</td></tr>
+          <tr><th>RSS</th><td>직선 <span class="H">ŷᵢ</span> = <span class="P">a</span><span class="X">xᵢ</span> + <span class="P">b</span>로 예측</td><td>Σ(<span class="Y">yᵢ</span> − <span class="H">ŷᵢ</span>)²</td></tr>
+        </table>
         <p class="note"><b>R² = 1</b>은 완벽하게 맞힌 것, <b>R² = 0</b>은 평균으로 예측한 것과 같습니다. <b>1에 가까울수록 좋습니다.</b></p>
         <p class="note" style="margin-top:.5rem">테스트 데이터에서는 평균으로 찍는 것보다 못하면 <b>음수</b>가 될 수도 있습니다.</p>
       </div>
@@ -1214,93 +1529,34 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
   </div>
 </section>
 
-<!-- 13 ─ 입력이 여러 개일 때 -->
+<!-- 14-2 ─ RMSE와 R²: 시험 점수 비유 -->
 <section class="slide dense">
-  <div class="top"><div class="kicker">한 걸음 더</div><h2>입력이 여러 개면 직선이 <span style="color:var(--b)">평면</span>이 된다</h2>
-    <p class="sub">TV·라디오·신문을 한꺼번에 고려하는 것이 <b>다중 회귀</b>입니다.</p></div>
+  <div class="top"><div class="kicker">STEP 4 보충</div>
+    <h2>RMSE는 받은 점수, R²는 백분율</h2>
+    <p class="sub">R²는 단위가 없는 비율이라서, 문제가 달라도 같은 눈금으로 읽을 수 있습니다.</p></div>
   <div class="body">
-    <div class="grid2">
-      <div class="card acc">
-        <h3>식이 길어질 뿐입니다</h3>
-        <div class="fml sm" style="margin:.7rem 0">
-          <span class="H">ŷ</span> = <span class="P">b</span> + <span class="P">a₁</span><span class="X">x₁</span> + <span class="P">a₂</span><span class="X">x₂</span> + <span class="P">a₃</span><span class="X">x₃</span>
-          <small><span class="X">x₁</span> TV, <span class="X">x₂</span> 라디오, <span class="X">x₃</span> 신문</small></div>
-        <p class="note">찾을 숫자가 2개에서 <b>4개</b>로 늘었을 뿐 <b>원리는 같습니다.</b>
-          여전히 RSS를 최소로 만드는 값을 찾습니다.</p>
-        <div class="hr"></div>
-        <p class="note">입력이 1개면 <b>직선</b>, 2개면 <b>평면</b>, 3개 이상이면 그림으로 그릴 수 없는
-          <b>초평면</b>이 됩니다. 수식은 똑같이 작동합니다.</p>
+    <div class="grid2" style="gap:1.2rem">
+      <div class="card acc-b pad-s">
+        <h3>시험 점수로 비교하기</h3>
+        <table class="tight" style="margin-top:.5rem">
+          <tr><th>과목</th><th>만점</th><th>받은 점수</th><th>백분율</th></tr>
+          <tr><td>영어</td><td>80점</td><td>72점</td><td><b>90%</b></td></tr>
+          <tr><td>수학</td><td>150점</td><td>120점</td><td><b>80%</b></td></tr>
+        </table>
+        <p class="note" style="margin-top:.6rem">72점과 120점만 보면 수학을 더 잘한 것 같습니다. 하지만 만점이 달라서 비교할 수 없습니다.</p>
+        <p class="note" style="margin-top:.4rem">만점으로 나눠 백분율로 바꾸면 <b>영어를 더 잘했다</b>는 것이 바로 보입니다.</p>
       </div>
-      <div class="card acc-b">
-        <h3>이때 생기는 질문</h3>
-        <p><b>같은 예산이면 어디에 쓸까?</b></p>
-        <ul class="clean" style="margin-top:.5rem">
-          <li>셋이 <b>서로 아무 상관 없다면</b> → 가장 효과 좋은 하나에 <b>몰아주는 것</b>이 좋습니다</li>
-          <li><b>시너지가 있다면</b> → 여러 곳에 <b>나눠 쓰는 것</b>이 더 나을 수 있습니다</li>
-        </ul>
-        <div class="hr"></div>
-        <p class="note">실제 데이터를 보니 <b>라디오와 신문 사이에 무시하기 어려운 관계</b>가 보였습니다.
-          두 광고가 서로 영향을 준다는 뜻입니다.</p>
+      <div class="card acc-d pad-s">
+        <h3>RMSE와 R²에 대응하면</h3>
+        <table class="tight" style="margin-top:.5rem">
+          <tr><th></th><th>시험</th><th>회귀</th></tr>
+          <tr><td>그대로의 값</td><td>받은 점수</td><td><b>RMSE</b> (원, kg, 점…)</td></tr>
+          <tr><td>나누는 기준</td><td>만점</td><td>평균으로 찍었을 때의 오차 (TSS)</td></tr>
+          <tr><td>나눈 비율</td><td>백분율</td><td><b>R²</b> (단위 없음)</td></tr>
+        </table>
+        <p class="note step" style="margin-top:.6rem">RMSE는 “평균 3만 원 틀린다”처럼 단위가 붙어서 그 문제 안에서만 의미가 있습니다.
+          R²는 매출이든 몸무게든 <b>1이면 완벽, 0이면 평균으로 찍은 수준</b>이라는 같은 눈금으로 읽습니다.</p>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- 14 ─ 과적합 인터랙티브 -->
-<section class="slide dense">
-  <div class="top"><div class="kicker">직접 보기</div><h2>모델이 복잡할수록 좋을까? 과적합(Overfitting)</h2>
-    <p class="sub">슬라이더로 <b>모델의 복잡도(다항식 차수)</b>를 올려보세요.</p></div>
-  <div class="body">
-    <div class="grid2" style="gap:1.2rem;grid-template-columns:1.3fr 1fr">
-      <div class="demo">
-        <canvas id="cv-of" width="880" height="420"></canvas>
-        <div class="ctl" style="margin-top:.7rem">
-          <label>다항식 차수
-            <input type="range" id="of-d" min="1" max="12" step="1" value="1">
-            <span class="val" id="of-dv">1</span></label>
-          <button class="btn ghost" id="of-new">데이터 새로 뽑기</button>
-        </div>
-      </div>
-      <div class="card acc-d">
-        <div class="statrow" style="margin-bottom:.9rem">
-          <div class="stat"><span class="k">훈련 오차</span><span class="v" id="of-tr" style="color:var(--a)">—</span></div>
-          <div class="stat"><span class="k">테스트 오차</span><span class="v" id="of-te" style="color:var(--warn)">—</span></div>
-        </div>
-        <canvas id="cv-ofc" width="520" height="290" style="max-height:24vh"></canvas>
-        <p class="note" style="margin-top:.6rem">가로축 = 복잡도, 세로축 = 오차.
-          <b class="X">훈련 오차는 계속 내려가지만</b>, <b style="color:var(--warn)">테스트 오차는 어느 지점부터 다시 올라갑니다</b>.</p>
-      </div>
-    </div>
-    <div class="card acc-w step pad-s">
-      <p><b>과적합</b> = 데이터의 <b>일반적인 패턴</b>이 아니라 <em>그 데이터에만 있는 잡음까지 외운</em> 상태입니다.
-        훈련 점수는 높지만 새 데이터에서는 성능이 낮습니다.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 15 ─ 과소/적정/과적합 + 편향분산 -->
-<section class="slide dense">
-  <div class="top"><h2>과소적합 · 적정 · 과적합</h2></div>
-  <div class="body">
-    <div class="grid3">
-      <div class="card acc-b"><span class="tag b">UNDERFITTING</span>
-        <h3 style="margin-top:.6rem">과소적합</h3>
-        <p class="sub">모델이 너무 단순해서 패턴을 잡지 못합니다.</p>
-        <p class="note" style="margin-top:.5rem">훈련·테스트 오차 <b>모두 높음</b></p></div>
-      <div class="card acc-c"><span class="tag c">JUST RIGHT</span>
-        <h3 style="margin-top:.6rem">적정</h3>
-        <p class="sub">잡음은 무시하고 <b>일반적 경향</b>을 잡습니다.</p>
-        <p class="note" style="margin-top:.5rem">훈련·테스트 오차 <b>모두 낮음</b> (목표)</p></div>
-      <div class="card acc-w"><span class="tag w">OVERFITTING</span>
-        <h3 style="margin-top:.6rem">과적합</h3>
-        <p class="sub">모든 점을 지나가려다 <b>곡선이 구불구불</b>해집니다.</p>
-        <p class="note" style="margin-top:.5rem">훈련 오차 <b>낮음</b>, 테스트 오차 <b>높음</b></p></div>
-    </div>
-    <div class="tip step pad-s">
-      <h3>그럼 적정한 차수는 어떻게 찾을까요?</h3>
-      <p class="note">차수처럼 <b>학습 전에 사람이 정하는 값</b>을 <b style="color:var(--b)">하이퍼파라미터</b>라고 합니다.
-        기울기 <span class="P">a</span>, 계수 <span class="P">β</span>처럼 학습으로 정해지는 <b class="P">파라미터</b>와 구분합니다.
-        하이퍼파라미터는 후보마다 학습해 보고 결과를 비교해서 고릅니다.</p>
     </div>
   </div>
 </section>
@@ -1309,13 +1565,13 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
 <section class="slide dense">
   <div class="top"><div class="kicker">모델 복잡도 정하기</div>
     <h2>테스트 오차가 가장 낮은 차수를 고르면 되지 않나요?</h2>
-    <p class="sub">앞의 U자 곡선만 보면 그렇게 하고 싶습니다. 하지만 그렇게 하면 <b>테스트 데이터로 공정하게 평가할 수 없게 됩니다.</b></p></div>
+    <p class="sub">차수마다 학습해 보고 테스트 오차가 가장 낮은 것을 고르고 싶어집니다. 하지만 그렇게 하면 <b>테스트 데이터로 공정하게 평가할 수 없게 됩니다.</b></p></div>
   <div class="body">
     <div class="grid3">
       <div class="card acc">
         <span class="tag a">① 훈련 오차로 고르면</span>
         <p style="margin-top:.5rem">차수를 올릴수록 <b>무조건 내려갑니다.</b></p>
-        <p class="note" style="margin-top:.4rem">항상 <b>가장 복잡한 모델</b>(과적합 데모의 차수 12)이 뽑히므로
+        <p class="note" style="margin-top:.4rem">항상 <b>가장 복잡한 모델</b>(차수 12)이 뽑히므로
           판단 기준이 될 수 없습니다.</p>
       </div>
       <div class="card acc-w">
@@ -1893,7 +2149,7 @@ const GD = (function(){
   const aStar = mxy/mxx;
   const mse  = a => D.reduce((s,p)=>s+Math.pow(p[1]-a*p[0],2),0)/N;
   const grad = a => -2*(mxy - a*mxx);
-  const A0 = -0.9;
+  let A0 = -0.9;
   let a = A0, path = [A0], t = 0, timer = null, dead = false;
 
   function stop(){ if (timer){ clearInterval(timer); timer = null;
@@ -1915,7 +2171,8 @@ const GD = (function(){
     }
     draw();
   }
-  function reset(){
+  function reset(start){
+    if (typeof start === 'number') A0 = start;
     stop(); a = A0; path = [A0]; t = 0; dead = false;
     document.getElementById('gd-msg').innerHTML =
       'η를 <b>0.35 이상</b>으로 올리고 자동을 눌러 어떻게 되는지 확인해 보세요.';
@@ -1926,6 +2183,19 @@ const GD = (function(){
     document.getElementById('gd-a').textContent = isFinite(a) ? a.toFixed(2) : '∞';
     document.getElementById('gd-m').textContent = (isFinite(a) && Math.abs(a)<30) ? mse(a).toFixed(1) : '∞';
     document.getElementById('gd-t').textContent = t;
+    /* 기울기 부호 → 최저점이 어느 쪽인지 */
+    const gEl = document.getElementById('gd-g'), dEl = document.getElementById('gd-dir');
+    if (isFinite(a) && Math.abs(a) < 30){
+      const gr = grad(a), neg = gr < 0;
+      const fmt = v => (v < 0 ? '−' : '+') + Math.abs(v).toFixed(2);
+      gEl.textContent = Math.abs(gr) < 0.02 ? '0.00' : fmt(gr);
+      gEl.style.color = Math.abs(gr) < 0.02 ? C.c : (neg ? C.a : C.b);
+      dEl.innerHTML = Math.abs(gr) < 0.02
+        ? '기울기 ≈ 0 → 지금 a가 <b style="color:' + C.c + '">최저점</b>입니다.'
+        : '기울기 <b style="color:' + gEl.style.color + '">' + fmt(gr) + '</b> (' + (neg ? '음수' : '양수') + ')'
+          + ' → 최저점은 <b>' + (neg ? '오른쪽' : '왼쪽') + '</b>'
+          + ' → a가 <b>' + (neg ? '커집니다' : '작아집니다') + '</b>';
+    } else { gEl.textContent = '∞'; gEl.style.color = C.w; dEl.innerHTML = ''; }
     /* ── 왼쪽: 데이터 + 현재 직선 ── */
     const P = { l:56, r:cv1.width-24, t:22, b:cv1.height-40 };
     const xmin=-3.4, xmax=3.4, ymin=-9, ymax=9;
@@ -1985,6 +2255,11 @@ const GD = (function(){
       g2.fillText('그림 밖으로 ↗', Q.r - 10, Q.t + 22);
     }
     if (inRange(a)){
+      /* 접선: 기울기의 부호를 눈으로 확인 */
+      const ga = grad(a), ma = mse(a), h = 0.9;
+      g2.strokeStyle = ga < 0 ? C.a : C.b; g2.lineWidth = 2.4; g2.setLineDash([8,5]);
+      g2.beginPath(); g2.moveTo(AX(a-h), MY(ma - ga*h)); g2.lineTo(AX(a+h), MY(ma + ga*h)); g2.stroke();
+      g2.setLineDash([]);
       g2.beginPath(); g2.arc(AX(a),MY(mse(a)),8,0,7);
       g2.fillStyle=C.w; g2.fill(); g2.strokeStyle='#fff'; g2.lineWidth=2.5; g2.stroke();
       /* 기울기 화살표 */
@@ -2005,124 +2280,121 @@ const GD = (function(){
     this.textContent = '정지 ■';
     timer = setInterval(step, 420);
   });
-  document.getElementById('gd-reset').addEventListener('click', reset);
+  document.getElementById('gd-reset').addEventListener('click', () => reset(-0.9));
+  document.getElementById('gd-reset2').addEventListener('click', () => reset(5.4));
   document.getElementById('gd-lr').addEventListener('input', draw);
   return { init: reset, stop: stop };
 })();
 
-/* ══════════ 과적합 데모 · 다항 회귀 ══════════ */
-const OF = (function(){
-function gauss(){ let u=0,v=0; while(!u) u=Math.random(); while(!v) v=Math.random();
-  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
-function axes(g, P, xlab, ylab){
-  g.strokeStyle = C.line; g.lineWidth = 1.4;
-  g.beginPath(); g.moveTo(P.l, P.t); g.lineTo(P.l, P.b); g.lineTo(P.r, P.b); g.stroke();
-  g.fillStyle = C.dim; g.font = '600 15px "Noto Sans KR", sans-serif';
-  if (xlab){ g.textAlign='right'; g.fillText(xlab, P.r, P.b + 26); }
-  if (ylab){ g.textAlign='left';  g.fillText(ylab, P.l - 4, P.t - 10); }
-}
-/* 다항 최소제곱 (정규방정식 + 아주 작은 리지). x는 [0,1] 가정 → t=2x-1로 옮겨 계산 */
-function feat(x, d){ const t = 2*x-1, v = [1]; for (let k=1;k<=d;k++) v.push(v[k-1]*t); return v; }
-function solve(A, y){
-  const m = y.length, M = A.map((r,k) => r.concat([y[k]]));
-  for (let c=0;c<m;c++){
-    let piv = c;
-    for (let r=c+1;r<m;r++) if (Math.abs(M[r][c]) > Math.abs(M[piv][c])) piv = r;
-    const tmp = M[c]; M[c] = M[piv]; M[piv] = tmp;
-    if (Math.abs(M[c][c]) < 1e-12) continue;
-    for (let r=0;r<m;r++){ if (r===c) continue;
-      const f = M[r][c]/M[c][c];
-      for (let s=c;s<=m;s++) M[r][s] -= f*M[c][s]; }
+/* ══════════ RSS vs MSE 기울기 비교 ══════════ */
+const RM = (function(){
+  const cv1 = document.getElementById('cv-rm1'), g1 = cv1.getContext('2d');
+  const cv2 = document.getElementById('cv-rm2'), g2 = cv2.getContext('2d');
+  const ETA = 0.1;
+  let n = 2;
+  const mse = a => 2.5 * (2 - a) * (2 - a);
+  const rss = a => n * mse(a);
+  const gm = a => -5 * (2 - a);
+  const gr = a => -5 * n * (2 - a);
+  const fmt = v => (v < 0 ? '−' : '') + (Math.abs(v) >= 1000 ? Math.round(Math.abs(v)).toLocaleString() : (Math.round(Math.abs(v) * 100) / 100).toString());
+  function path(gfn){ const p = [0]; for (let k = 0; k < 3; k++){ const a = p[p.length - 1]; p.push(a - ETA * gfn(a)); } return p; }
+  function drawCurves(){
+    const P = { l:58, r:cv1.width - 16, t:34, b:cv1.height - 42 };
+    const amin = -0.5, amax = 4.5, ymax = 25;
+    const X = v => P.l + (v - amin) / (amax - amin) * (P.r - P.l);
+    const Y = y => P.b - y / ymax * (P.b - P.t);
+    g1.clearRect(0, 0, cv1.width, cv1.height);
+    g1.strokeStyle = C.line; g1.lineWidth = 1.6;
+    g1.beginPath(); g1.moveTo(P.l, P.t); g1.lineTo(P.l, P.b); g1.lineTo(P.r, P.b); g1.stroke();
+    g1.fillStyle = C.dim; g1.font = '600 24px "JetBrains Mono", monospace'; g1.textAlign = 'center';
+    [0, 1, 2, 3, 4].forEach(v => g1.fillText(v, X(v), P.b + 26));
+    g1.textAlign = 'right'; [0, 10, 20].forEach(v => g1.fillText(v, P.l - 10, Y(v) + 7));
+    g1.font = '700 24px "Noto Sans KR", sans-serif'; g1.fillText('a', P.r, P.b + 26);
+    g1.textAlign = 'left'; g1.fillText('오차', P.l - 50, P.t - 12);
+    g1.save(); g1.beginPath(); g1.rect(P.l, P.t, P.r - P.l, P.b - P.t); g1.clip();
+    g1.setLineDash([6, 6]); g1.strokeStyle = 'rgba(14,138,82,.55)'; g1.lineWidth = 2;
+    g1.beginPath(); g1.moveTo(X(2), P.t); g1.lineTo(X(2), P.b); g1.stroke(); g1.setLineDash([]);
+    [[rss, C.b], [mse, C.d]].forEach(([f, col]) => {
+      g1.strokeStyle = col; g1.lineWidth = 4; g1.beginPath();
+      for (let k = 0; k <= 600; k++){ const v = amin + (amax - amin) * k / 600;
+        const y = Math.min(f(v), ymax * 3); k ? g1.lineTo(X(v), Y(y)) : g1.moveTo(X(v), Y(y)); }
+      g1.stroke();
+    });
+    [[rss, gr, C.b], [mse, gm, C.d]].forEach(([f, gf, col]) => {
+      const y0 = f(0), s = gf(0);
+      if (y0 > ymax) return;
+      g1.setLineDash([9, 6]); g1.strokeStyle = col; g1.lineWidth = 3;
+      g1.beginPath(); g1.moveTo(X(-0.4), Y(y0 - s * 0.4)); g1.lineTo(X(1.3), Y(y0 + s * 1.3)); g1.stroke();
+      g1.setLineDash([]);
+      g1.beginPath(); g1.arc(X(0), Y(y0), 8, 0, 7); g1.fillStyle = col; g1.fill();
+      g1.strokeStyle = '#fff'; g1.lineWidth = 2.5; g1.stroke();
+    });
+    g1.restore();
+    /* 곡선 이름: 곡선이 위쪽 테두리를 넘는 자리 옆 */
+    g1.font = '800 26px "Noto Sans KR", sans-serif'; g1.textAlign = 'left';
+    const exitR = 2 + Math.sqrt(ymax / (2.5 * n));
+    g1.fillStyle = C.b; g1.fillText('RSS', X(exitR) + 10, P.t + 18);
+    g1.fillStyle = C.d; g1.fillText('MSE', X(4.05), Y(mse(4.05)) + 32);
+    if (rss(0) > ymax){
+      g1.fillStyle = C.b; g1.font = '700 22px "Noto Sans KR", sans-serif';
+      g1.fillText('↑ RSS는 a = 0에서', P.l + 12, P.t + 22);
+      g1.fillText('높이 ' + fmt(rss(0)) + ' (그림 위쪽)', P.l + 12, P.t + 50);
+    }
+    g1.fillStyle = C.c; g1.textAlign = 'center'; g1.font = '700 22px "Noto Sans KR", sans-serif';
+    g1.fillText('최저점', X(2), P.t - 12);
   }
-  return M.map((r,k) => Math.abs(r[k])<1e-12 ? 0 : r[m]/r[k]);
-}
-function polyfit(data, d){
-  const m = d+1, A = [], y = new Array(m).fill(0);
-  for (let r=0;r<m;r++) A.push(new Array(m).fill(0));
-  data.forEach(p => { const v = feat(p[0], d);
-    for (let r=0;r<m;r++){ y[r] += v[r]*p[1];
-      for (let s=0;s<m;s++) A[r][s] += v[r]*v[s]; } });
-  for (let r=0;r<m;r++) A[r][r] += 1e-7;
-  return solve(A, y);
-}
-const ppred = (x, w) => feat(x, w.length-1).reduce((s,v,k) => s + v*w[k], 0);
-const prmse = (data, w) => Math.sqrt(data.reduce((s,p) => s + Math.pow(p[1]-ppred(p[0],w),2), 0)/data.length);
-  const cv = document.getElementById('cv-of'), g = cv.getContext('2d');
-  const cc = document.getElementById('cv-ofc'), gc = cc.getContext('2d');
-  const P = { l:52, r:cv.width-24, t:20, b:cv.height-42 };
-  const ymin=-1.9, ymax=1.9;
-  const X = x => P.l + x*(P.r-P.l);
-  const Y = y => P.b - (y-ymin)/(ymax-ymin)*(P.b-P.t);
-  const truth = x => Math.sin(2*Math.PI*x*0.95) * 1.15;
-  const NTR = 13, NTE = 60, SIG = 0.30, DMAX = 12;
-  let TR = [], TE = [], curve = [];
-
-  function gen(){
-    TR = []; TE = [];
-    for (let k=0;k<NTR;k++){ const x = 0.03 + 0.94*k/(NTR-1) + gauss()*0.012;
-      TR.push([Math.min(1,Math.max(0,x)), truth(x) + gauss()*SIG]); }
-    for (let k=0;k<NTE;k++){ const x = Math.random();
-      TE.push([x, truth(x) + gauss()*SIG]); }
-    curve = [];
-    for (let d=1; d<=DMAX; d++){ const w = polyfit(TR, d);
-      curve.push([prmse(TR,w), prmse(TE,w)]); }
+  function drawSteps(){
+    const P = { l:30, r:cv2.width - 30 };
+    const amin = -1, amax = 5;
+    const X = v => P.l + (v - amin) / (amax - amin) * (P.r - P.l);
+    g2.clearRect(0, 0, cv2.width, cv2.height);
+    const inR = v => v >= amin && v <= amax;
+    [['MSE', C.d, path(gm), 130], ['RSS', C.b, path(gr), 290]].forEach(([name, col, p, yb]) => {
+      g2.strokeStyle = C.line; g2.lineWidth = 2;
+      g2.beginPath(); g2.moveTo(P.l, yb); g2.lineTo(P.r, yb); g2.stroke();
+      g2.fillStyle = C.dim; g2.font = '600 22px "JetBrains Mono", monospace'; g2.textAlign = 'center';
+      for (let v = amin; v <= amax; v++){
+        g2.beginPath(); g2.moveTo(X(v), yb - 6); g2.lineTo(X(v), yb + 6); g2.stroke();
+        g2.fillText(v, X(v), yb + 28);
+      }
+      g2.setLineDash([5, 5]); g2.strokeStyle = 'rgba(14,138,82,.6)';
+      g2.beginPath(); g2.moveTo(X(2), yb - 62); g2.lineTo(X(2), yb + 8); g2.stroke(); g2.setLineDash([]);
+      g2.textAlign = 'left';
+      g2.fillStyle = col; g2.font = '800 26px "Noto Sans KR", sans-serif'; g2.fillText(name, P.l, yb - 88);
+      g2.fillStyle = C.fg; g2.font = '700 23px "JetBrains Mono", monospace';
+      g2.fillText('a: ' + p.map(fmt).join(' → '), P.l + 80, yb - 88);
+      g2.strokeStyle = col; g2.fillStyle = col; g2.lineWidth = 3;
+      for (let k = 1; k < p.length; k++){
+        const a0 = p[k - 1], a1 = p[k];
+        if (!inR(a0)) break;
+        if (inR(a1)){
+          if (Math.abs(a1 - a0) < 1e-9) continue;
+          const xm = (X(a0) + X(a1)) / 2, h = 20 + 22 * Math.abs(a1 - a0);
+          g2.beginPath(); g2.moveTo(X(a0), yb); g2.quadraticCurveTo(xm, yb - h, X(a1), yb); g2.stroke();
+          g2.beginPath(); g2.arc(X(a1), yb, 6, 0, 7); g2.fill();
+        } else {
+          const edge = a1 > amax ? P.r : P.l, dir = a1 > amax ? 1 : -1;
+          g2.beginPath(); g2.moveTo(X(a0), yb); g2.quadraticCurveTo((X(a0) + edge) / 2, yb - 80, edge, yb - 44); g2.stroke();
+          g2.beginPath(); g2.moveTo(edge + dir * 4, yb - 40); g2.lineTo(edge - dir * 12, yb - 52); g2.lineTo(edge - dir * 8, yb - 32); g2.closePath(); g2.fill();
+          g2.font = '800 22px "Noto Sans KR", sans-serif'; g2.textAlign = dir > 0 ? 'right' : 'left';
+          g2.fillText('a = ' + fmt(a1) + ', 그림 밖', edge - dir * 18, yb - 58);
+          break;
+        }
+      }
+      g2.beginPath(); g2.arc(X(0), yb, 7, 0, 7); g2.fillStyle = C.fg; g2.fill();
+    });
   }
   function draw(){
-    const d = +document.getElementById('of-d').value;
-    document.getElementById('of-dv').textContent = d;
-    const w = polyfit(TR, d);
-    g.clearRect(0,0,cv.width,cv.height);
-    axes(g, P, 'x', 'y');
-    g.strokeStyle='rgba(20,35,66,.30)'; g.lineWidth=2.4; g.setLineDash([7,6]);
-    g.beginPath();
-    for (let k=0;k<=200;k++){ const x=k/200; k?g.lineTo(X(x),Y(truth(x))):g.moveTo(X(x),Y(truth(x))); }
-    g.stroke(); g.setLineDash([]);
-    g.strokeStyle=C.d; g.lineWidth=3.4; g.beginPath();
-    let started=false;
-    for (let k=0;k<=400;k++){ const x=k/400, yv=ppred(x,w);
-      const yy = Math.min(ymax+4, Math.max(ymin-4, yv));
-      if(!started){ g.moveTo(X(x),Y(yy)); started=true; } else g.lineTo(X(x),Y(yy)); }
-    g.stroke();
-    TE.forEach(p => { g.beginPath(); g.arc(X(p[0]),Y(p[1]),3.2,0,7);
-      g.fillStyle='rgba(200,50,74,.32)'; g.fill(); });
-    TR.forEach(p => { g.beginPath(); g.arc(X(p[0]),Y(p[1]),6,0,7);
-      g.fillStyle=C.a; g.fill(); g.strokeStyle='#fff'; g.lineWidth=2; g.stroke(); });
-    g.font='600 15px "Noto Sans KR", sans-serif'; g.textAlign='left';
-    g.fillStyle=C.a;  g.fillText('● 훈련 데이터', P.l+12, P.t+20);
-    g.fillStyle='rgba(200,50,74,.7)'; g.fillText('● 테스트 데이터', P.l+140, P.t+20);
-    g.fillStyle='rgba(20,35,66,.45)'; g.fillText('--- 진짜 함수 f(x)', P.l+290, P.t+20);
-    g.fillStyle=C.d;  g.fillText('— 학습한 모델 (차수 ' + d + ')', P.l+440, P.t+20);
-    document.getElementById('of-tr').textContent = prmse(TR,w).toFixed(3);
-    document.getElementById('of-te').textContent = prmse(TE,w).toFixed(3);
-    drawCurve(d);
+    document.getElementById('rm-gr').textContent = fmt(gr(0));
+    document.getElementById('rm-gm').textContent = fmt(gm(0));
+    document.getElementById('rm-msg').innerHTML = n === 2
+      ? 'n = 2: RSS 기울기가 MSE의 2배라서 한 걸음에 <span class="P">a</span> = 2로 갑니다. η = 0.1이 우연히 딱 맞은 경우입니다.'
+      : 'n = ' + n + ': MSE 기울기는 그대로인데 RSS 기울기는 ' + fmt(gr(0)) + '입니다. 같은 η = 0.1로 한 걸음에 <span class="P">a</span> = ' + fmt(path(gr)[1]) + '까지 가서 <b style="color:var(--warn)">발산</b>합니다.';
+    document.querySelectorAll('.rmsel .btn').forEach(b => b.classList.toggle('on', +b.dataset.n === n));
+    drawCurves(); drawSteps();
   }
-  function drawCurve(dcur){
-    const Q = { l:46, r:cc.width-14, t:16, b:cc.height-34 };
-    const top = 1.1;
-    const CX = d => Q.l + (d-1)/(DMAX-1)*(Q.r-Q.l);
-    const CY = e => Q.b - Math.min(e,top)/top*(Q.b-Q.t);
-    gc.clearRect(0,0,cc.width,cc.height);
-    gc.strokeStyle=C.line; gc.lineWidth=1.3;
-    gc.beginPath(); gc.moveTo(Q.l,Q.t); gc.lineTo(Q.l,Q.b); gc.lineTo(Q.r,Q.b); gc.stroke();
-    gc.fillStyle=C.dim; gc.font='600 13px "Noto Sans KR", sans-serif';
-    gc.textAlign='right'; gc.fillText('복잡도(차수) →', Q.r, Q.b+24);
-    gc.textAlign='left';  gc.fillText('오차', Q.l-34, Q.t+4);
-    gc.strokeStyle='rgba(106,63,192,.35)'; gc.lineWidth=2.4;
-    gc.beginPath(); gc.moveTo(CX(dcur),Q.t); gc.lineTo(CX(dcur),Q.b); gc.stroke();
-    [[0,C.a],[1,C.w]].forEach(function(pair){
-      gc.strokeStyle=pair[1]; gc.lineWidth=2.8; gc.beginPath();
-      curve.forEach((e,k) => { const x=CX(k+1), y=CY(e[pair[0]]); k?gc.lineTo(x,y):gc.moveTo(x,y); });
-      gc.stroke();
-      gc.fillStyle=pair[1];
-      curve.forEach((e,k) => { gc.beginPath(); gc.arc(CX(k+1),CY(e[pair[0]]),3,0,7); gc.fill(); });
-    });
-    gc.font='700 13px "Noto Sans KR", sans-serif'; gc.textAlign='left';
-    gc.fillStyle=C.a; gc.fillText('훈련', Q.l+8, Q.b-10);
-    gc.fillStyle=C.w; gc.fillText('테스트', Q.l+8, Q.t+16);
-  }
-  document.getElementById('of-d').addEventListener('input', draw);
-  document.getElementById('of-new').addEventListener('click', () => { gen(); draw(); });
-  return { init: function(){ gen(); draw(); } };
+  document.querySelectorAll('.rmsel .btn').forEach(b => b.addEventListener('click', () => { n = +b.dataset.n; draw(); }));
+  return { init: draw };
 })();
 
 /* 슬라이드를 벗어나면 자동 실행 중인 데모는 멈춘다 */
@@ -2131,7 +2403,7 @@ const _show = show;
 show = function(n, all){ if (n !== GD_SLIDE) GD.stop(); _show(n, all); };
 
 GD.init();
-OF.init();
+RM.init();
 show((parseInt(location.hash.slice(1), 10) || 1) - 1);
 </script>
 </body>
