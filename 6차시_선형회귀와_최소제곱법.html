@@ -236,6 +236,15 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
 .deriv .why{font-family:'Noto Sans KR',sans-serif;font-weight:400;font-size:.68em;color:var(--dim)}
 .deriv .fml{display:grid;font-size:1.5rem;grid-template-columns:max-content 1fr;column-gap:1.6rem;row-gap:.25rem;
   align-items:baseline;text-align:left;line-height:1.5;margin:.6rem 0}
+/* 용어를 누르면 카드 위에 설명 상자가 뜬다 */
+.term{border:0;background:none;padding:0;font:inherit;font-weight:800;color:var(--a);
+  text-decoration:underline dotted;text-underline-offset:.2em;cursor:pointer}
+.popnote{display:none;position:absolute;left:1rem;right:1rem;bottom:1rem;z-index:5;cursor:pointer;
+  background:var(--card);border:1px solid rgba(10,126,194,.45);border-radius:.9rem;padding:.9rem 1.2rem;
+  box-shadow:0 .6rem 1.8rem rgba(20,35,66,.2)}
+.popnote.open{display:block;animation:fade .25s ease}
+.popnote h3{color:var(--a)}
+.popnote .why{font-family:'Noto Sans KR',sans-serif;font-weight:500;color:var(--dim)}
 /* 데이터사우루스 버튼 */
 .dsel{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.6rem;justify-content:center}
 .dsel .btn{font-size:1.2rem;padding:.25rem .65rem}
@@ -1286,12 +1295,25 @@ pre code{background:none;padding:0;font-size:1.47rem;line-height:1.6;color:#2230
           e = <span class="Y">y</span> − (<span class="P">a</span><span class="X">x</span> + <span class="P">b</span>), &nbsp; 손실 = e²</div>
         <p class="note">손실 e²는 <span class="P">a</span>에 바로 연결되어 있지 않습니다. 중간에 e가 끼어 있습니다.</p>
         <p class="note" style="margin:.3rem 0;padding-left:.8rem;border-left:.2rem solid var(--dim)"><b><span class="P">a</span>가 바뀜 → 오차 e가 바뀜 → 손실 e²가 바뀜</b></p>
-        <p class="note">그래서 두 개를 따로 구한 뒤 곱합니다.</p>
+        <p class="note">그래서 두 개를 따로 구한 뒤 곱합니다. 이것을 <button class="term" data-pop="pop-chain">연쇄법칙</button>(chain rule)이라고 합니다.</p>
         <p class="note" style="margin-top:.3rem;line-height:1.7">
           ① <span class="P">a</span>가 1 바뀔 때 e는 얼마나 바뀌나? → <b>−<span class="X">x</span>배</b><br>
           ② e가 1 바뀔 때 e²는 얼마나 바뀌나? → <b>2e배</b><br>
           ③ 둘을 곱하면 <span class="P">a</span>가 1 바뀔 때 e²가 바뀌는 양<br>
           &nbsp;&nbsp;&nbsp;&nbsp;→ <b>2e × (−<span class="X">x</span>) = −2<span class="X">x</span>e</b></p>
+        <div class="fml sm" style="margin:.4rem 0 0;padding:.3rem;font-size:1.35rem">
+          ∂(e²)/∂<span class="P">a</span> = (∂e/∂<span class="P">a</span>) × (d(e²)/de) = (−<span class="X">x</span>) × 2e</div>
+        <div class="popnote" id="pop-chain">
+          <h3>연쇄법칙 = 합성함수의 미분법</h3>
+          <p class="note" style="margin-top:.3rem">함수 안에 함수가 들어 있을 때, 바깥 함수의 미분과 안쪽 함수의 미분을 곱합니다.</p>
+          <div class="fml sm" style="margin:.4rem 0 0;padding:.4rem .8rem;font-size:1.3rem;line-height:1.55;text-align:left">
+            <span class="why">일반식: y = f(g(x))이면</span><br>
+            dy/dx = f′(g(x)) × g′(x)<br>
+            <span class="why">u = g(x)로 두고 다르게 쓰면</span><br>
+            dy/dx = (dy/du) × (du/dx)<br>
+            <span class="why">여기서는 u 자리에 e, y 자리에 e²가 들어갑니다</span></div>
+          <p class="note" style="margin-top:.3rem;font-size:1.2rem;color:var(--dim)">상자를 누르면 닫힙니다.</p>
+        </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:1rem">
         <div class="card acc-d pad-s">
@@ -2119,6 +2141,13 @@ const DINO = [
   draw();
 })();
 
+/* ══════════ 용어 설명 상자 ══════════ */
+document.querySelectorAll('.term[data-pop]').forEach(function(btn){
+  const pop = document.getElementById(btn.dataset.pop);
+  pop.parentElement.style.position = 'relative';
+  btn.addEventListener('click', function(){ pop.classList.toggle('open'); });
+  pop.addEventListener('click', function(e){ e.stopPropagation(); pop.classList.remove('open'); });
+});
 /* ══════════ 유도 과정 펼치기 ══════════ */
 (function(){
   const box = document.getElementById('dv-box'), btn = document.getElementById('dv-open');
