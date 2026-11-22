@@ -11,13 +11,14 @@
 | 4차시 | Q러닝과 벨만 방정식 | [열기](https://sejong-truelightn.github.io/ai-general-2026/4%EC%B0%A8%EC%8B%9C_Q%EB%9F%AC%EB%8B%9D%EA%B3%BC_%EB%B2%A8%EB%A7%8C%EB%B0%A9%EC%A0%95%EC%8B%9D.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/4.html)<br><sub><!--date:4차시_Q러닝과_벨만방정식.html-->2026-09-11 업데이트</sub> |
 | 5차시 | 지도 학습의 4단계 | [열기](https://sejong-truelightn.github.io/ai-general-2026/5%EC%B0%A8%EC%8B%9C_%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5%EC%9D%98_4%EB%8B%A8%EA%B3%84.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/5.html)<br><sub><!--date:5차시_지도학습의_4단계.html-->2026-10-28 업데이트</sub> |
 | 6차시 | 선형 회귀와 최소제곱법 | [열기](https://sejong-truelightn.github.io/ai-general-2026/6%EC%B0%A8%EC%8B%9C_%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80%EC%99%80_%EC%B5%9C%EC%86%8C%EC%A0%9C%EA%B3%B1%EB%B2%95.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/6.html)<br><sub><!--date:6차시_선형회귀와_최소제곱법.html-->2026-11-06 업데이트</sub> |
-| 8차시 | 비지도 학습: 클러스터링과 차원 축소 | [열기](https://sejong-truelightn.github.io/ai-general-2026/8%EC%B0%A8%EC%8B%9C_%EB%B9%84%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5_%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81%EA%B3%BC_%EC%B0%A8%EC%9B%90%EC%B6%95%EC%86%8C.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/8.html)<br><sub><!--date:8차시_비지도학습_클러스터링과_차원축소.html-->2026-11-18 업데이트</sub> |
+| 8차시 | 비지도 학습: 클러스터링과 차원 축소 | [열기](https://sejong-truelightn.github.io/ai-general-2026/8%EC%B0%A8%EC%8B%9C_%EB%B9%84%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5_%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81%EA%B3%BC_%EC%B0%A8%EC%9B%90%EC%B6%95%EC%86%8C.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/8.html)<br><sub><!--date:8차시_비지도학습_클러스터링과_차원축소.html-->2026-11-23 업데이트</sub> |
 
 전체 자료를 한 번에 받으려면 → [**ZIP으로 내려받기**](https://github.com/sejong-truelightn/ai-general-2026/archive/refs/heads/main.zip)
 
 ## 최근 업데이트
 
 <!--changelog-->
+- **2026-11-23** · 8차시 — 정규분포·선형 회귀의 MLE를 μ·σ 미분과 최소제곱법 유도까지 식으로 푸는 슬라이드로 바꾸고, 붓꽃 꽃받침 조합 설명·log 미분 설명 추가, likelihood로 다시 보는 세 가지·슬롯머신 MLE 슬라이드 제거
 - **2026-11-18** · 실습4 — 학생용 노트북을 핵심 코드와 빈칸 6곳만 남기고 정리, 답 노트북 공개
 - **2026-11-18** · 8차시 — 비지도 학습 강의자료 추가 (차원 축소·MLE·클러스터링, 과적합·조기 종료 슬라이드 포함)
 - **2026-11-06** · 6차시 — 배수 예시 데이터를 x₁ = 1, 3, 4 / x₂ = 10, 30, 40으로 바꾸고 XᵀX와 3×3 행렬식 계산 갱신
@@ -29,7 +30,6 @@
 - **2026-10-30** · 6차시 — 정규방정식 뒤에 (XᵀX)⁻¹이 없는 세 가지 경우 슬라이드 추가
 - **2026-10-28** · 6차시 — 앤스컴 콰르텟 설명 추가, a 공식 유도에 cᵢ 단계와 예시 추가, 그림 클릭으로 넘어가게 수정
 - **2026-10-28** · 5차시 — 과적합·검증·교차검증·분류(K-NN) 슬라이드 제거
-- **2026-10-28** · 실습4 — 공개: 선형 회귀 학생용 노트북 + Advertising 데이터, README 표에 Colab 링크 추가
 <!--/changelog-->
 
 ## 실습 노트북
