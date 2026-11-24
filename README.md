@@ -11,13 +11,14 @@
 | 4차시 | Q러닝과 벨만 방정식 | [열기](https://sejong-truelightn.github.io/ai-general-2026/4%EC%B0%A8%EC%8B%9C_Q%EB%9F%AC%EB%8B%9D%EA%B3%BC_%EB%B2%A8%EB%A7%8C%EB%B0%A9%EC%A0%95%EC%8B%9D.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/4.html)<br><sub><!--date:4차시_Q러닝과_벨만방정식.html-->2026-09-11 업데이트</sub> |
 | 5차시 | 지도 학습의 4단계 | [열기](https://sejong-truelightn.github.io/ai-general-2026/5%EC%B0%A8%EC%8B%9C_%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5%EC%9D%98_4%EB%8B%A8%EA%B3%84.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/5.html)<br><sub><!--date:5차시_지도학습의_4단계.html-->2026-10-28 업데이트</sub> |
 | 6차시 | 선형 회귀와 최소제곱법 | [열기](https://sejong-truelightn.github.io/ai-general-2026/6%EC%B0%A8%EC%8B%9C_%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80%EC%99%80_%EC%B5%9C%EC%86%8C%EC%A0%9C%EA%B3%B1%EB%B2%95.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/6.html)<br><sub><!--date:6차시_선형회귀와_최소제곱법.html-->2026-11-06 업데이트</sub> |
-| 8차시 | 비지도 학습: 클러스터링과 차원 축소 | [열기](https://sejong-truelightn.github.io/ai-general-2026/8%EC%B0%A8%EC%8B%9C_%EB%B9%84%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5_%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81%EA%B3%BC_%EC%B0%A8%EC%9B%90%EC%B6%95%EC%86%8C.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/8.html)<br><sub><!--date:8차시_비지도학습_클러스터링과_차원축소.html-->2026-11-23 업데이트</sub> |
+| 8차시 | 비지도 학습: 클러스터링과 차원 축소 | [열기](https://sejong-truelightn.github.io/ai-general-2026/8%EC%B0%A8%EC%8B%9C_%EB%B9%84%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5_%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81%EA%B3%BC_%EC%B0%A8%EC%9B%90%EC%B6%95%EC%86%8C.html) | [다운로드](https://sejong-truelightn.github.io/ai-general-2026/dl/8.html)<br><sub><!--date:8차시_비지도학습_클러스터링과_차원축소.html-->2026-11-25 업데이트</sub> |
 
 전체 자료를 한 번에 받으려면 → [**ZIP으로 내려받기**](https://github.com/sejong-truelightn/ai-general-2026/archive/refs/heads/main.zip)
 
 ## 최근 업데이트
 
 <!--changelog-->
+- **2026-11-25** · 8차시 — likelihood를 식으로 쓰는 슬라이드를 MLE 동전 슬라이드 앞으로 이동
 - **2026-11-25** · 실습5 — 답 노트북 update 함수에 numer·denom을 for 문으로 풀어 쓴 주석 추가
 - **2026-11-25** · 실습5 — 거리 계산을 리스트 컴프리헨션 대신 for 문과 append로 풀어 씀
 - **2026-11-25** · 실습5 — 소속 배정 빈칸을 한 줄 조건 표현식 대신 if·else 문으로 바꿈
@@ -29,7 +30,6 @@
 - **2026-11-04** · 6차시 — 손 계산 예제로 보는 학습률 슬라이드를 학습률 η에 따른 학습 결과 앞으로 이동
 - **2026-11-04** · 6차시 — a·b 기울기 유도 슬라이드에 연쇄법칙 식과 클릭하면 뜨는 합성함수의 미분법 설명 추가
 - **2026-11-04** · 실습4 — 학생용: NumPy 함수 비교 섹션에 사이킷런 LinearRegression 추가
-- **2026-11-04** · 실습4 — 학생용: (XᵀX)⁻¹이 없는 경우·경사하강법 손 계산·NumPy 함수 비교·Advertising 그래프 추가, 도전 과제 제거, 데이터 만들기 주석 보강
 <!--/changelog-->
 
 ## 실습 노트북
