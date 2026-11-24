@@ -18,6 +18,7 @@
 ## 최근 업데이트
 
 <!--changelog-->
+- **2026-11-25** · 실습5 — K-평균 직접 만들기 학생용·답 노트북 추가
 - **2026-11-23** · 8차시 — 정규분포·선형 회귀의 MLE를 μ·σ 미분과 최소제곱법 유도까지 식으로 푸는 슬라이드로 바꾸고, 붓꽃 꽃받침 조합 설명·log 미분 설명 추가, likelihood로 다시 보는 세 가지·슬롯머신 MLE 슬라이드 제거
 - **2026-11-18** · 실습4 — 학생용 노트북을 핵심 코드와 빈칸 6곳만 남기고 정리, 답 노트북 공개
 - **2026-11-18** · 8차시 — 비지도 학습 강의자료 추가 (차원 축소·MLE·클러스터링, 과적합·조기 종료 슬라이드 포함)
@@ -29,7 +30,6 @@
 - **2026-11-04** · 6차시 — (XᵀX)⁻¹이 없는 세 경우 예시, a·b 기울기 유도, RSS 대신 MSE를 쓰는 이유, RMSE·R² 비유 슬라이드 추가, 과적합 슬라이드 제거
 - **2026-10-30** · 6차시 — 정규방정식 뒤에 (XᵀX)⁻¹이 없는 세 가지 경우 슬라이드 추가
 - **2026-10-28** · 6차시 — 앤스컴 콰르텟 설명 추가, a 공식 유도에 cᵢ 단계와 예시 추가, 그림 클릭으로 넘어가게 수정
-- **2026-10-28** · 5차시 — 과적합·검증·교차검증·분류(K-NN) 슬라이드 제거
 <!--/changelog-->
 
 ## 실습 노트북
@@ -42,3 +42,4 @@
 | 실습 2 | 톰슨 샘플링 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb) | [보기](https://sejong-truelightn.github.io/ai-general-2026/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81_%ED%92%80%EC%9D%B4%EA%B0%80%EC%9D%B4%EB%93%9C.html) | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B52_%ED%86%B0%EC%8A%A8%EC%83%98%ED%94%8C%EB%A7%81.ipynb)<br><sub><!--date:실습2_톰슨샘플링.ipynb-->2026-09-02 업데이트</sub> |
 | 실습 3 | 그리드월드와 Q러닝 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B53_Q%EB%9F%AC%EB%8B%9D_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb) | — | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B53_Q%EB%9F%AC%EB%8B%9D.ipynb)<br><sub><!--date:실습3_Q러닝.ipynb-->2026-09-15 업데이트</sub> |
 | 실습 4 | 선형 회귀 직접 만들기 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B54_%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb)<br><sub><!--date:실습4_선형회귀_학생용(빈칸).ipynb-->2026-11-18 업데이트</sub> | — | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B54_%EC%84%A0%ED%98%95%ED%9A%8C%EA%B7%80.ipynb)<br><sub><!--date:실습4_선형회귀.ipynb-->2026-11-18 업데이트</sub> |
+| 실습 5 | K-평균 직접 만들기 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B55_%EB%B9%84%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5_%ED%95%99%EC%83%9D%EC%9A%A9%28%EB%B9%88%EC%B9%B8%29.ipynb)<br><sub><!--date:실습5_비지도학습_학생용(빈칸).ipynb-->2026-11-25 업데이트</sub> | — | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sejong-truelightn/ai-general-2026/blob/main/%EC%8B%A4%EC%8A%B55_%EB%B9%84%EC%A7%80%EB%8F%84%ED%95%99%EC%8A%B5.ipynb)<br><sub><!--date:실습5_비지도학습.ipynb-->2026-11-25 업데이트</sub> |
