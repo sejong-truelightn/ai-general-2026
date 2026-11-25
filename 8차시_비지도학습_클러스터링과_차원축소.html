@@ -1078,7 +1078,37 @@ table.trace td.l{text-align:left}
   </div>
 </section>
 
-<!-- 28 ─ 손 계산 -->
+<!-- 28 ─ 식과 코드 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">식으로 쓰기</div><h2>K-평균이 줄이려는 값 J</h2>
+    <p class="sub">J는 각 점이 자기 그룹 센트로이드에서 얼마나 떨어져 있는지를 모두 더한 값입니다. J가 작을수록 그룹이 촘촘하게 잘 뭉쳐 있습니다.</p></div>
+  <div class="body">
+    <div class="fml">
+      J = Σ<sub>i=1..N</sub> Σ<sub>k=1..K</sub> <span class="P">r<sub>ik</sub></span> ‖<span class="X">x<sub>i</sub></span> − <span class="H">μ<sub>k</sub></span>‖²
+      <small><span class="X">x<sub>i</sub></span>는 i번째 데이터(N개), <span class="H">μ<sub>k</sub></span>는 k번째 그룹의 센트로이드(K개), <span class="P">r<sub>ik</sub></span>는 <span class="X">x<sub>i</sub></span>가 그룹 k에 속하면 1, 아니면 0입니다.<br>
+        Σ 두 개로 모든 점과 모든 센트로이드의 짝을 훑지만, <span class="P">r<sub>ik</sub></span> = 0인 항은 사라지므로 <b>자기 그룹 센트로이드까지의 거리 제곱</b>만 더해집니다.</small></div>
+    <p class="note step" style="text-align:center">J에서 정해야 할 것은 소속 <span class="P">r<sub>ik</sub></span>와 센트로이드 <span class="H">μ<sub>k</sub></span> 두 가지입니다. 둘을 한 번에 정하기는 어려워서, <b>하나를 고정하고 다른 하나를 정하는 일</b>을 번갈아 반복합니다.</p>
+    <div class="grid2" style="align-items:stretch">
+      <div class="card acc pad-s step">
+        <h3>① 배정 · 센트로이드는 그대로, 소속을 정한다</h3>
+        <div class="fml sm" style="margin:.4rem 0 .6rem;font-size:1.2rem">
+          <span class="P">r<sub>ik</sub></span> = 1 &nbsp;(k = argmin<sub>j</sub> ‖<span class="X">x<sub>i</sub></span> − <span class="H">μ<sub>j</sub></span>‖²일 때)</div>
+        <p class="note">점 <span class="X">x<sub>i</sub></span>에서 모든 센트로이드까지 거리를 재고, 가장 가까운 센트로이드의 번호 k에만 1을 줍니다.
+          센트로이드가 정해져 있을 때 J를 가장 작게 만드는 방법은 각 점을 가장 가까운 센트로이드에 넣는 것입니다.</p>
+      </div>
+      <div class="card acc-d pad-s step">
+        <h3>② 이동 · 소속은 그대로, 센트로이드를 정한다</h3>
+        <div class="fml sm" style="margin:.4rem 0 .6rem;font-size:1.2rem">
+          <span class="H">μ<sub>k</sub></span> = Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span><span class="X">x<sub>i</sub></span> ÷ Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span></div>
+        <p class="note">분자는 그룹 k에 속한 점들의 좌표 합, 분모는 그 점의 개수이므로 <span class="H">μ<sub>k</sub></span>는 <b>그룹의 평균</b>입니다.
+          그룹이 정해져 있을 때 거리 제곱의 합을 가장 작게 만드는 위치가 평균입니다. J를 <span class="H">μ<sub>k</sub></span>로 미분해서 0으로 놓으면 이 식이 나오고,
+          정규분포의 MLE에서 <span style="font-family:'JetBrains Mono',monospace">μ̂</span>가 평균으로 나온 것과 같은 원리입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 29 ─ 손 계산 -->
 <section class="slide dense">
   <div class="top"><div class="kicker">손으로 따라가 보기</div><h2>수직선 위의 점 6개, K = 2</h2>
     <p class="sub">데이터: <b>1, 2, 4, 9, 10, 12</b> · 처음 센트로이드: <b class="c1">μ₁ = 1</b>, <b class="c2">μ₂ = 4</b></p></div>
@@ -1106,36 +1136,6 @@ table.trace td.l{text-align:left}
         <h3>표에서 볼 것</h3>
         <p class="note">J가 126 → 35.25 → 18.94 → 9.33으로 <b>단계마다 줄어들거나 그대로</b>입니다.
           늘어나는 단계는 없습니다. 이 성질 덕분에 K-평균은 언젠가 반드시 멈춥니다.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 29 ─ 식과 코드 -->
-<section class="slide dense">
-  <div class="top"><div class="kicker">식으로 쓰기</div><h2>K-평균이 줄이려는 값 J</h2>
-    <p class="sub">J는 각 점이 자기 그룹 센트로이드에서 얼마나 떨어져 있는지를 모두 더한 값입니다. J가 작을수록 그룹이 촘촘하게 잘 뭉쳐 있습니다.</p></div>
-  <div class="body">
-    <div class="fml">
-      J = Σ<sub>i=1..N</sub> Σ<sub>k=1..K</sub> <span class="P">r<sub>ik</sub></span> ‖<span class="X">x<sub>i</sub></span> − <span class="H">μ<sub>k</sub></span>‖²
-      <small><span class="X">x<sub>i</sub></span>는 i번째 데이터(N개), <span class="H">μ<sub>k</sub></span>는 k번째 그룹의 센트로이드(K개), <span class="P">r<sub>ik</sub></span>는 <span class="X">x<sub>i</sub></span>가 그룹 k에 속하면 1, 아니면 0입니다.<br>
-        Σ 두 개로 모든 점과 모든 센트로이드의 짝을 훑지만, <span class="P">r<sub>ik</sub></span> = 0인 항은 사라지므로 <b>자기 그룹 센트로이드까지의 거리 제곱</b>만 더해집니다.</small></div>
-    <p class="note step" style="text-align:center">J에서 정해야 할 것은 소속 <span class="P">r<sub>ik</sub></span>와 센트로이드 <span class="H">μ<sub>k</sub></span> 두 가지입니다. 둘을 한 번에 정하기는 어려워서, <b>하나를 고정하고 다른 하나를 정하는 일</b>을 번갈아 반복합니다.</p>
-    <div class="grid2" style="align-items:stretch">
-      <div class="card acc pad-s step">
-        <h3>① 배정 · 센트로이드는 그대로, 소속을 정한다</h3>
-        <div class="fml sm" style="margin:.4rem 0 .6rem;font-size:1.2rem">
-          <span class="P">r<sub>ik</sub></span> = 1 &nbsp;(k = argmin<sub>j</sub> ‖<span class="X">x<sub>i</sub></span> − <span class="H">μ<sub>j</sub></span>‖²일 때)</div>
-        <p class="note">점 <span class="X">x<sub>i</sub></span>에서 모든 센트로이드까지 거리를 재고, 가장 가까운 센트로이드의 번호 k에만 1을 줍니다.
-          센트로이드가 정해져 있을 때 J를 가장 작게 만드는 방법은 각 점을 가장 가까운 센트로이드에 넣는 것입니다.</p>
-      </div>
-      <div class="card acc-d pad-s step">
-        <h3>② 이동 · 소속은 그대로, 센트로이드를 정한다</h3>
-        <div class="fml sm" style="margin:.4rem 0 .6rem;font-size:1.2rem">
-          <span class="H">μ<sub>k</sub></span> = Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span><span class="X">x<sub>i</sub></span> ÷ Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span></div>
-        <p class="note">분자는 그룹 k에 속한 점들의 좌표 합, 분모는 그 점의 개수이므로 <span class="H">μ<sub>k</sub></span>는 <b>그룹의 평균</b>입니다.
-          그룹이 정해져 있을 때 거리 제곱의 합을 가장 작게 만드는 위치가 평균입니다. J를 <span class="H">μ<sub>k</sub></span>로 미분해서 0으로 놓으면 이 식이 나오고,
-          정규분포의 MLE에서 <span style="font-family:'JetBrains Mono',monospace">μ̂</span>가 평균으로 나온 것과 같은 원리입니다.</p>
       </div>
     </div>
   </div>
