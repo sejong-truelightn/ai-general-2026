@@ -1098,11 +1098,11 @@ table.trace td.l{text-align:left}
       </div>
       <div class="card acc-d pad-s step">
         <h3>② 이동 · 소속은 그대로, 센트로이드를 정한다</h3>
-        <div class="fml sm" style="margin:.4rem 0 .6rem;font-size:1.2rem">
-          <span class="H">μ<sub>k</sub></span> = Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span><span class="X">x<sub>i</sub></span> ÷ Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span></div>
-        <p class="note">분자는 그룹 k에 속한 점들의 좌표 합, 분모는 그 점의 개수이므로 <span class="H">μ<sub>k</sub></span>는 <b>그룹의 평균</b>입니다.
-          그룹이 정해져 있을 때 거리 제곱의 합을 가장 작게 만드는 위치가 평균입니다. J를 <span class="H">μ<sub>k</sub></span>로 미분해서 0으로 놓으면 이 식이 나오고,
-          정규분포의 MLE에서 <span style="font-family:'JetBrains Mono',monospace">μ̂</span>가 평균으로 나온 것과 같은 원리입니다.</p>
+        <div class="fml sm" style="margin:.4rem 0 .6rem;font-size:1.05rem;line-height:1.75">
+          ∂J/∂<span class="H">μ<sub>k</sub></span> = −2 Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span>(<span class="X">x<sub>i</sub></span> − <span class="H">μ<sub>k</sub></span>) = 0<br>
+          → <span class="H">μ<sub>k</sub></span> = Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span><span class="X">x<sub>i</sub></span> ÷ Σ<sub>i</sub> <span class="P">r<sub>ik</sub></span></div>
+        <p class="note">J를 <span class="H">μ<sub>k</sub></span>로 미분해 0으로 놓으면 나오는 식입니다. 분자는 그룹 k에 속한 점들의 좌표 합, 분모는 그 점의 개수이므로
+          <span class="H">μ<sub>k</sub></span>는 <b>그룹의 평균</b>입니다. 정규분포의 MLE에서 <span style="font-family:'JetBrains Mono',monospace">μ̂</span>가 평균으로 나온 것과 같은 원리입니다.</p>
       </div>
     </div>
   </div>
