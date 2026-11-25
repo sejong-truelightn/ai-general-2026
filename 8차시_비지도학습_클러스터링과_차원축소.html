@@ -1108,6 +1108,44 @@ table.trace td.l{text-align:left}
   </div>
 </section>
 
+<!-- 28-1 ─ 식 ①·② 손 계산 -->
+<section class="slide dense">
+  <div class="top"><div class="kicker">숫자를 넣어 보기</div><h2>식 ①·②를 손으로 계산하면</h2>
+    <p class="sub">수직선 위의 점 <b>1, 2, 4, 9, 10, 12</b>를 K = 2로 나누는 중이고, 지금 센트로이드는 <b class="c1">μ₁ = 1.5</b>, <b class="c2">μ₂ = 8.75</b>입니다.</p></div>
+  <div class="body">
+    <div class="grid2" style="align-items:stretch">
+      <div class="card acc pad-s">
+        <h3>① 배정 · 거리 제곱이 더 작은 쪽에 넣는다</h3>
+        <table class="tight trace" style="margin-top:.5rem">
+          <tr><th>점 x<sub>i</sub></th><th>(x<sub>i</sub> − 1.5)²</th><th>(x<sub>i</sub> − 8.75)²</th><th>소속</th></tr>
+          <tr><td>1</td><td><b>0.25</b></td><td>60.06</td><td class="c1">그룹 1</td></tr>
+          <tr><td>2</td><td><b>0.25</b></td><td>45.56</td><td class="c1">그룹 1</td></tr>
+          <tr><td>4</td><td><b>6.25</b></td><td>22.56</td><td class="c1">그룹 1</td></tr>
+          <tr><td>9</td><td>56.25</td><td><b>0.06</b></td><td class="c2">그룹 2</td></tr>
+          <tr><td>10</td><td>72.25</td><td><b>1.56</b></td><td class="c2">그룹 2</td></tr>
+          <tr><td>12</td><td>110.25</td><td><b>10.56</b></td><td class="c2">그룹 2</td></tr>
+        </table>
+        <p class="note" style="margin-top:.5rem">점 4는 6.25 &lt; 22.56이므로 그룹 1에 넣습니다(<span class="P">r</span><sub>4,1</sub> = 1, <span class="P">r</span><sub>4,2</sub> = 0).
+          점마다 굵은 값을 고르면 J = 0.25 + 0.25 + 6.25 + 0.06 + 1.56 + 10.56 ≈ 18.94로, 이 센트로이드에서 J가 가장 작습니다.</p>
+      </div>
+      <div class="card acc-d pad-s step">
+        <h3>② 이동 · 그룹의 평균으로 옮긴다</h3>
+        <p class="note" style="margin-top:.5rem">그룹 1의 소속 <span class="P">r</span><sub>i1</sub>은 점 순서대로 1, 1, 1, 0, 0, 0입니다. 식 ②에 넣으면 r = 0인 점은 빠집니다.</p>
+        <div class="fml sm" style="margin:.4rem 0 .6rem;font-size:1rem;line-height:1.7">
+          분자 = 1·1 + 1·2 + 1·4 + 0·9 + 0·10 + 0·12 = 7<br>
+          분모 = 1 + 1 + 1 + 0 + 0 + 0 = 3<br>
+          <span class="H">μ₁</span> = 7 ÷ 3 ≈ 2.33</div>
+        <p class="note">미분으로 확인해 봅니다. 그룹 1이 J에 보태는 값은</p>
+        <div class="fml sm" style="margin:.4rem 0 .6rem;font-size:1rem;line-height:1.7">
+          J₁(μ) = (1 − μ)² + (2 − μ)² + (4 − μ)²<br>
+          dJ₁/dμ = −2[(1 − μ) + (2 − μ) + (4 − μ)]<br>
+          = −2(7 − 3μ) = 0 → μ = 7/3 ≈ 2.33</div>
+        <p class="note">같은 방법으로 <span class="H">μ₂</span> = (9 + 10 + 12) ÷ 3 = 31/3 ≈ 10.33입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- 29 ─ 손 계산 -->
 <section class="slide dense">
   <div class="top"><div class="kicker">손으로 따라가 보기</div><h2>수직선 위의 점 6개, K = 2</h2>
